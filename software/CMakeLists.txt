@@ -10,13 +10,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package(GSL 1.15 REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Boost REQUIRED)
-include_directories(SYSTEM include ${GSL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${GITHOME_MSU}/commonutils/software/include ${GITHOME_MSU}/coral/software/include)
+include_directories(SYSTEM include ${GSL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR} ${GITHOME_MSU}/commonutils/software/include ${GITHOME_MSU}/coral/software/include ${GITHOME_MSU}/msu_eos/software/include)
 message("Includes: ${GSL_INCLUDE_DIR} ${EIGEN3_INCLUDE_DIR}")
 
 file(GLOB ERhoSampler_src ./src/*.cc)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
-add_library(ERhoSampler STATIC ${ERhoSampler_src})
-target_link_libraries(ERhoSampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${Boost_LIBRARIES})
+add_library(msu_ERhoSampler STATIC ${ERhoSampler_src})
+target_link_libraries(msu_ERhoSampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${Boost_LIBRARIES})
 
 
 
