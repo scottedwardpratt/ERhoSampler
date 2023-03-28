@@ -7,8 +7,8 @@
 #include "msu_commonutils/randy.h"
 #include "msu_commonutils/misc.h"
 #include "msu_eos/resonances.h"
-#include "msu_ERhoSampler/hyper.h"
-#include "msu_ERhoSampler/sampler.h"
+#include "msu_sampler/hyper.h"
+#include "msu_sampler/sampler.h"
 #include "msu_eos/eos.h"
 using namespace std;
 

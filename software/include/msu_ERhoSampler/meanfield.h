@@ -1,7 +1,7 @@
 #ifndef __SAMPLER_MEANFIELD_H__
 #define __SAMPLER_MEANFIELD_H__
 
-#include "msu_ERhoSampler/classdefs.h"
+#include "msu_sampler/classdefs.h"
 #include "msu_eos/resonances.h"
 #include "msu_commonutils/parametermap.h"
 

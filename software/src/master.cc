@@ -1,4 +1,4 @@
-#include "msu_ERhoSampler/master.h"
+#include "msu_sampler/master.h"
 #include "msu_commonutils/constants.h"
 
 //#define __TEST_PITILDE_TRACE__
@@ -7,7 +7,7 @@ using namespace std;
 CmeanField *CmasterSampler::meanfield=NULL;
 
 CmasterSampler::CmasterSampler(CparameterMap *parmapin){
-	message=new char[300];
+	message=new char[CLog::CHARLENGTH];
 	parmap=parmapin;
 	randy=new Crandy(-1234);
 	reslist=new CresList(parmap);
@@ -89,8 +89,8 @@ int CmasterSampler::MakeEvent(){
 	partlist->nparts=0;
 	list<Chyper *>::iterator it;
 
-	//printf("check a, hyperlist length=%d\n",int(hyperlist.size()));
-	for(it=hyperlist.begin();it!=hyperlist.end();++it){
+
+	for(it=hyperlist.begin();it!=hyperlist.end();it++){
 		hyper=*it;
 		if(hyper->firstcall){
 			if(FINDT){
@@ -106,15 +106,13 @@ int CmasterSampler::MakeEvent(){
 				samplerptr->CalcDensitiesMu0();
 				samplerptr->FIRSTCALL=false;
 			}
-			if(CALCMU){
+			if(CALCMU)
 				samplerptr->GetMuNH(hyper);
-			}
 			hyper->firstcall=false;
 			samplerptr->CalcNHadronsEpsilonP(hyper);
 		}
 		np=hyper->sampler->MakeParts(hyper);
 		nparts+=np;
-		//CLog::Info("nparts="+to_string(nparts)+"\n");
 	}
 	if(MSU_SAMPLER_findT!=nullptr)
 		delete MSU_SAMPLER_findT;
@@ -195,7 +193,7 @@ void CmasterSampler::GetPitilde(FourTensor &pivisc,FourTensor &pitilde,FourVecto
 	}
 	snprintf(message,CLog::CHARLENGTH,"-----------------------------\n");
 	CLog::Info(message);
-	snprintf(message,CLog::CHARLENGTH,"before, trace=%g, pi_00=%g=?%g, u=(%g,%g,%g,%g)\n",trace,picontract/(u[0]*u[0]),pivisc[0][0],u[0],u[1],u[2],u[3]);
+	snprintf(message,"before, trace=%g, pi_00=%g=?%g, u=(%g,%g,%g,%g)\n",trace,picontract/(u[0]*u[0]),pivisc[0][0],u[0],u[1],u[2],u[3]);
 	CLog::Info(message);
 	CLog::Info(message);
 	snprintf(message,CLog::CHARLENGTH,"pivisc=\n");

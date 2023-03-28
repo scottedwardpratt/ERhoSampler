@@ -1,9 +1,9 @@
-#include "msu_ERhoSampler/hyper.h"
+#include "msu_sampler/hyper.h"
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
 #include <iostream>
-#include "msu_ERhoSampler/sampler.h"
-char *Chyper::message=new char[300];
+#include "msu_sampler/sampler.h"
+char *Chyper::message=new char[CLog::CHARLENGTH];
 
 Chyper::Chyper(){
 	muB=muII=muS=0.0;
@@ -23,11 +23,9 @@ void Chyper::SetSampler(Csampler *samplerptr){
 
 void Chyper::Print(){
 	CLog::Info("----- hyper info -------\n");
-	CLog::Info("T0="+to_string(T0)+",sampler->TF="+to_string(sampler->Tf)+",sigma="+to_string(sigma)+"\n");
-	CLog::Info("rhoB="+to_string(rhoB)+", rhoII="+to_string(rhoII)+", rhoS="+to_string(rhoS)+"\n");
-	CLog::Info("muB="+to_string(muB)+",muII="+to_string(muII)+",muS="+to_string(muS)+"\n");
-	CLog::Info("epsilon="+to_string(epsilon)+",P="+to_string(P)+",s="+to_string(GetEntropyDensity())+"\n");
-	CLog::Info("nhadrons="+to_string(nhadrons)+"\n");
+	CLog::Info("T0="+to_string(T0)+",sampler->TF="+to_string(sampler->Tf)+",sigma="+to_string(sigma)+",rhoB="+to_string(rhoB)+",rhoII="+to_string(rhoII));
+	CLog::Info("muB="+to_string(muB)+",muII="+to_string(muII)+",muS="+to_string(muS));
+	CLog::Info("epsilon="+to_string(epsilon)+",P="+to_string(P)+",s="+to_string(GetEntropyDensity()));
 	snprintf(message,CLog::CHARLENGTH,"dOmega=(%g,%g,%g,%g), udotdOmega=%g\n",dOmega[0],dOmega[1],dOmega[2],dOmega[3],udotdOmega);
 	CLog::Info(message);
 	snprintf(message,CLog::CHARLENGTH,"u=(%g,%g,%g,%g).    tau=%g,eta=%g\n",u[0],u[1],u[2],u[3],tau,eta);
@@ -60,7 +58,7 @@ void Chyper::CalcBiggestpitilde(){
 	cout << A << endl;
 	cout << es.eigenvalues() << endl;
 	V=es.eigenvalues();
-	snprintf(message,CLog::CHARLENGTH,"eigenvalues: %g,%g,%g\n",V(0),V(1),V(2));
+	snprintf(message,CLog::CHARLENGTH,CLog::CHARLENGTH,"eigenvalues: %g,%g,%g\n",V(0),V(1),V(2));
 	CLog::Info(message);
 	biggestpitilde=0.0;
 	for(alpha=0;alpha<3;alpha++){

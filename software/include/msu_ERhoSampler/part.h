@@ -3,10 +3,9 @@
 #include "msu_commonutils/commondefs.h"
 #include "msu_commonutils/misc.h"
 #include "msu_eos/resonances.h"
-#include "msu_ERhoSampler/classdefs.h"
+#include "msu_sampler/classdefs.h"
 #include "msu_eos/eos.h"
 #include "msu_commonutils/log.h"
-#include "msu_ERhoSampler/hyper.h"
 using namespace std;
 
 // ----------------------------
@@ -26,6 +25,7 @@ public:
 	double msquared;
 	FourVector p,r;
 	double EQWeight;
+	Eigen::VectorXd EQWeightVec;
 	void Print();
 	double GetMass();
 	void AddPart(int pid,FourVector &p,FourVector &r);

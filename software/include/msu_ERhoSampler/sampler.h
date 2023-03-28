@@ -2,9 +2,9 @@
 #define __SAMPLER_H__
 #include <Eigen/Dense>
 #include "msu_eos/resonances.h"
-#include "msu_ERhoSampler/part.h"
-#include "msu_ERhoSampler/classdefs.h"
-#include "msu_ERhoSampler/master.h"
+#include "msu_sampler/part.h"
+#include "msu_sampler/classdefs.h"
+#include "msu_sampler/master.h"
 #include "msu_eos/eos.h"
 #include "msu_commonutils/log.h"
 using namespace std;
@@ -25,6 +25,7 @@ public:
 		// Same but with mu=0
 	double nhadrons0,epsilon0,P0,p4overE30;
 	vector<double> density0i,epsilon0i,P0i;
+	Eigen::Matrix3d chi0,chiinv0,sigma0;
 	vector<map<double,double>> sfdens0imap;
 	bool FIRSTCALL;
 	int ntest;
@@ -36,7 +37,7 @@ public:
 	void GetPars(CparameterMap *parmapset);
 	void CalcLambdaMu0(); // Calculates lambda which is used for viscous corrections with mu=0
 	double CalcLambdaF(Chyper *hyper);
-	double CalcLambdaF(double muB,double muI,double muS,double Pf); //  calculates lambda with mu !=0
+	double CalcLambdaF(double muB,double muII,double muS,double Pf); //  calculates lambda with mu !=0
 	void CalcDensitiesF();
 	void CalcDensitiesMu0();
 	double totvol;
@@ -82,15 +83,14 @@ public:
 
 	void GetNHMu0(); // Calculates above quantities
 	void GetMuNH(Chyper *hyper);
-	void GetMuNH(double rhoBtarget,double rhoItarget,double rhoStarget,double &muB,double &muI,double &muS,double &nhadrons);
+	void GetMuNH(double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS,double &nhadrons);
 	void CalcNHadronsEpsilonP(Chyper *hyper);
-	void CalcNHadronsEpsilonP(double muB,double muI,double muS,double &nhadronsf,double &epsilonf,double &Pf);
-	
+	void CalcNHadronsEpsilonP(double muB,double muII,double muS,double &nhadronsf,double &epsilonf,double &Pf);
 	void GetTfMuNH(Chyper *hyper);
-	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoItarget,double rhoStarget,double &muB,double &muI,double &muS);
-	void GetEpsilonRhoDerivatives(double muB,double muI,double muS,double &epsilon,double &rhoB,double &rhoI,double &rhoS,Eigen::MatrixXd &A);
-	void GetEpsilonRhoChi(double muB,double muI,double muS,double &epsilon,double &rhoB,double &rhoI,double &rhoS,Eigen::Matrix4d &chi);
-	void GetEpsilonRhoChiSlow(double muB,double muI,double muS,double &epsilon,double &rhoB,double &rhoI,double &rhoS,Eigen::Matrix4d &chi);
+	void GetTfMuNH(double epsilontarget,double rhoBtarget,double rhoIItarget,double rhoStarget,double &muB,double &muII,double &muS);
+	void GetEpsilonRhoDerivatives(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::MatrixXd &A);
+	void GetEpsilonRhoChi(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi);
+	void GetEpsilonRhoChiSlow(double muB,double muII,double muS,double &epsilon,double &rhoB,double &rhoII,double &rhoS,Eigen::Matrix4d &chi);
 	int MakeParts(Chyper *hyper);
 	void CalcRvisc(Chyper *hyper);
 	void BulkScale(Chyper *hyper,double mass,FourVector &pnobulk,FourVector &p);

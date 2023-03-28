@@ -1,4 +1,4 @@
-#include "msu_ERhoSampler/master.h"
+#include "msu_sampler/master.h"
 #include "msu_commonutils/constants.h"
 
 //#define __TEST_PITILDE_TRACE__
@@ -162,9 +162,6 @@ void CmasterSampler::ReadHyper_BEST_Binary3D(){
 	}
 	nelements=ielement;
 }
-
-#include "msu_ERhoSampler/master.h"
-#include "msu_commonutils/constants.h"
 
 //#define __TEST_PITILDE_TRACE__
 

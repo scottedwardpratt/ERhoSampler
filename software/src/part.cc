@@ -1,8 +1,8 @@
-#include "msu_ERhoSampler/part.h"
+#include "msu_sampler/part.h"
 
 CresList *CpartList::reslist=NULL;
-char *Cpart::message=new char[300];
-char *CpartList::message=new char[300];
+char *Cpart::message=new char[CLog::CHARLENGTH];
+char *CpartList::message=new char[CLog::CHARLENGTH];
 
 Cpart::Cpart(){
 	msquared=0.0;
@@ -60,10 +60,10 @@ void Cpart::BoostR(FourVector &u){
 }
 
 void Cpart::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
-	Eigen::VectorXd EQWeightVec(7);
 	int B=resinfo->baryon,S=resinfo->strange,II=resinfo->q[0]-resinfo->q[1];
 	double chipinv=1.0/((hyper->P+hyper->epsilon)*hyper->T0);
 	double nhadrons=hyper->nhadrons;
+	EQWeightVec.resize(7);
 	EQWeightVec[0]=(hyper->chiinv(0,0)*p[0] +hyper->chiinv(0,1)*B
 		 +hyper->chiinv(0,2)*II +hyper->chiinv(0,3)*S)*nhadrons;
 	
@@ -82,10 +82,15 @@ void Cpart::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
 		EQWeight+=EQWeightVec(i)*EQTarget(i);
 }
 
-////////////////////////
+
+/////////////////
+/////////////////
+/////////////////
+
+
 
 CpartList::CpartList(CparameterMap *parmap,CresList *reslist_in){
-	nparts_blocksize=parmap->getI("MSU_SAMPLER__NPARTS_BLOCKSIZE",2000);
+	nparts_blocksize=parmap->getI("MSU_SAMPLER_NPARTS_BLOCKSIZE",2000);
 	partvec.resize(nparts_blocksize);
 	reslist=reslist_in;
 	Reset();
@@ -220,6 +225,7 @@ void CpartList::SumSETensor(){
 		}
 	}
 }
+
 
 void CpartList::SetEQWeight(Chyper *hyper,Eigen::VectorXd &EQTarget){
 	//int II,nparts=partvec.size();

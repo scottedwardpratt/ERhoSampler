@@ -40,7 +40,8 @@ int main(){
 	long long int npartstot=0,ievent;
 	int nparts;
 	CparameterMap parmap;
-	parmap.ReadParsFromFile("parameters.txt");
+	parmap.ReadParsFromFile("parameters/parameters.txt");
+	parmap.ReadParsFromFile("parameters/boltzmann_parameters.txt");
 	CmasterSampler ms(&parmap);
 	CpartList *partlist=new CpartList(&parmap,ms.reslist);
 	ms.partlist=partlist;

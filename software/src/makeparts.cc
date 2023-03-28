@@ -1,6 +1,6 @@
 #include <Eigen/Dense>
 #include <Eigen/Eigenvalues>
-#include "msu_ERhoSampler/sampler.h"
+#include "msu_sampler/sampler.h"
 #include "msu_commonutils/constants.h"
 #include "msu_commonutils/misc.h"
 #include <iostream>
@@ -36,11 +36,10 @@ int Csampler::MakeParts(Chyper *hyper){
 				dNcheck+=dN;
 				dNtotprime-=dN;
 				if(dNtotprime<-0.0001){
-					snprintf(message,CLog::CHARLENGTH,
-					"res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
+					snprintf(message,CLog::CHARLENGTH,"res=%d, dNtotprime=%g, should not be negative, mutot=%g, dNcheck=%g, dNtot=%g\n",
 					ires,dNtotprime,mutot,dNcheck,dNtot);
 					CLog::Info(message);
-					snprintf(message,CLog::CHARLENGTH,"nhadrons0=%12.8f, hyper->nhadrons=%12.8f\n",nhadrons0,hyper->nhadrons);
+					snprintf(message,CLog::CHARLENGTH,"nhadrons0=%g, hyper->nhadrons=%g\n",nhadrons0,hyper->nhadrons);
 					CLog::Fatal(message);
 				}
 				dnparts=CheckResInVolume(dN,Tf,resinfo,hyper);
@@ -55,7 +54,7 @@ int Csampler::MakeParts(Chyper *hyper){
 			for(nbose=2;nbose<=n_bose_corr;nbose++){
 				resinfo=reslist->GetResInfoPtr(211);
 				ires=resinfo->ires;
-				mutot=0.5*nbose*hyper->muII*hyper->T0/Tf;
+				mutot=2.0*nbose*hyper->muII*hyper->T0/Tf;
 				dN=NSAMPLE*exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
@@ -78,7 +77,7 @@ int Csampler::MakeParts(Chyper *hyper){
 				}
 				resinfo=reslist->GetResInfoPtr(-211);
 				ires=resinfo->ires;
-				mutot=-0.5*nbose*hyper->muII*hyper->T0/Tf;
+				mutot=-2.0*nbose*hyper->muIII*hyper->T0/Tf;
 				dN=exp(mutot)*pibose_dens0[nbose]*udotdOmega;
 				dNcheck+=dN;
 				dNtotprime-=dN;
