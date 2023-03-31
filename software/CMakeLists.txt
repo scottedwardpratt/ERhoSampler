@@ -27,7 +27,6 @@ SET_SOURCE_FILES_PROPERTIES(
       newsamplertest.cc PROPERTIES OBJECT_DEPENDS
     ${GITHOME_MSU}/msu_eos/software/lib/libmsu_eos.a
  )
-add_executable(newsamplertest ${SOURCE_FILES})
 SET_SOURCE_FILES_PROPERTIES(
       newsamplertest.cc PROPERTIES OBJECT_DEPENDS
     ${GITHOME_MSU}/commonutils/software/lib/libmsu_commonutils.a
