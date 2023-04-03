@@ -24,12 +24,15 @@ void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double delet
 
 void DecayParts(Crandy *randyset,CpartList *partlist){
 	CDecay_NBody Decay(randyset);
-	int imother,idaughter;
+	int imother,idaughter,alpha;
 	int nbodies,ibody;
-	double mtot;
-	vector<Cpart> daughterpart(10);
-	vector<double> masses(11);
-	vector<FourVector> pdaughter(10);
+	vector<Cpart> daughterpart;
+	vector<double> masses;
+	vector<FourVector> pdaughter;
+	pdaughter.resize(10);
+	daughterpart.resize(10);
+	masses.resize(11);
+	FourVector u;
 	Cpart *motherpart,*dpart;
 	array<CresInfo *,5> daughterresinfo;
 	imother=0;
@@ -37,24 +40,26 @@ void DecayParts(Crandy *randyset,CpartList *partlist){
 		motherpart=&(partlist->partvec[imother]);
 		if(motherpart->resinfo->decay){
 			motherpart->resinfo->DecayGetResInfoPtr(nbodies,daughterresinfo);
-			Decay.nbodies=nbodies;
-			mtot=0.0;
+			motherpart->Setp0();
 			masses[0]=motherpart->resinfo->mass;
 			for(ibody=0;ibody<nbodies;ibody++){
 				masses[ibody+1]=daughterresinfo[ibody]->mass;
-				mtot+=masses[ibody+1];
 			}
-			// Increase mother mass if not large enough
-			if(mtot>masses[0]){
-				masses[0]=mtot+0.01;
-			}
-			motherpart->msquared=masses[0]*masses[0];
-			motherpart->Setp0();
-			mtot=0.0;
-			for(ibody=0;ibody<nbodies;ibody++)
+			
+			double mtot=0.0;
+			for(ibody=1;ibody<=nbodies;ibody++)
 				mtot+=masses[ibody+1];
 			if(mtot>masses[0]){
-				printf("This cannot be, m[0]=%g, m[1]=%g, m[2]=%g, mtot=%g, nbodies=%d\n",masses[0],masses[1],masses[2],mtot,nbodies);
+				printf("YIKES!!!!\n");
+				exit(1);
+			}
+			
+			for(alpha=0;alpha<4;alpha++)
+				u[alpha]=motherpart->p[alpha]/masses[0];
+			double u2=u[0]*u[0]-u[1]*u[1]-u[2]*u[2]-u[3]*u[3];
+			if(fabs(u2-1.0)>0.0001){
+				printf("1=?%g, mtot=%g, mothermass=%g\\\n",u2,mtot,masses[0]);
+				printf("p_mother=(%g,%g,%g,%g)\n",motherpart->p[0],motherpart->p[1],motherpart->p[2],motherpart->p[3]);
 				exit(1);
 			}
 			//
@@ -65,15 +70,16 @@ void DecayParts(Crandy *randyset,CpartList *partlist){
 					dpart=motherpart;
 					dpart->pid=daughterresinfo[ibody]->pid;
 					dpart->resinfo=daughterresinfo[ibody];
-					dpart->p=pdaughter[ibody];
-					dpart->SetMsquared();
 				}
 				else{
-					partlist->AddPart(daughterresinfo[ibody]->pid,pdaughter[ibody],motherpart->r);
+					partlist->AddPart(dpart->pid=daughterresinfo[ibody]->pid,pdaughter[ibody],motherpart->r);
 					idaughter=partlist->nparts-1;
 					dpart=&(partlist->partvec[idaughter]);
 					dpart->EQWeightVec=motherpart->EQWeightVec;
 				}
+				dpart->p=pdaughter[ibody];
+				dpart->SetMsquared();
+				Misc::Boost(u,dpart->p,dpart->p);
 			}
 		}
 		if(!motherpart->resinfo->decay)
