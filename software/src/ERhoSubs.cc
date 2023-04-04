@@ -113,12 +113,12 @@ void DecayParts(Crandy *randyset,CpartList *partlist){
 	}
 }
 
-double GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &Corr){
+double GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMatrix){
 	int i,j;
 	double weight=0.0;
 	for(i=0;i<7;i++){
 		for (j=0;j<7;j++){
-			weight+=part1->EQWeightVec[i]*Corr(i,j)*part2->EQWeightVec[j];
+			weight+=part1->EQWeightVec[i]*CorrMatrix(i,j)*part2->EQWeightVec[j];
 		}
 	}
 	return weight;
