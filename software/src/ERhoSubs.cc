@@ -24,44 +24,54 @@ void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double delet
 
 void DecayParts(Crandy *randyset,CpartList *partlist){
 	CDecay_NBody Decay(randyset);
-	int imother,idaughter,alpha;
-	int nbodies,ibody;
+	int imother,idaughter,alpha,a;
+	int nbodies,ibody,ntry;
+	Eigen::VectorXd EQWeightVecTmp(7);
+	double mtot;
+	char message[CLog::CHARLENGTH];
+	FourVector pmother,pafter,pprime;
 	vector<Cpart> daughterpart;
 	vector<double> masses;
 	vector<FourVector> pdaughter;
 	pdaughter.resize(10);
 	daughterpart.resize(10);
 	masses.resize(11);
+	int qbefore[3],qafter[3];
 	FourVector u;
 	Cpart *motherpart,*dpart;
 	array<CresInfo *,5> daughterresinfo;
 	imother=0;
 	while(imother<partlist->nparts){
 		motherpart=&(partlist->partvec[imother]);
+		EQWeightVecTmp=motherpart->EQWeightVec;
+		pmother=motherpart->p;
+		for(alpha=0;alpha<3;alpha++){
+			pafter[alpha]=0.0;
+			qafter[alpha]=0;
+			qbefore[alpha]=motherpart->resinfo->q[alpha];
+		}
 		if(motherpart->resinfo->decay){
-			motherpart->resinfo->DecayGetResInfoPtr(nbodies,daughterresinfo);
 			motherpart->Setp0();
 			masses[0]=motherpart->resinfo->mass;
-			for(ibody=0;ibody<nbodies;ibody++){
-				masses[ibody+1]=daughterresinfo[ibody]->mass;
-			}
-			
-			double mtot=0.0;
-			for(ibody=1;ibody<=nbodies;ibody++)
-				mtot+=masses[ibody+1];
-			if(mtot>masses[0]){
-				printf("YIKES!!!!\n");
-				exit(1);
-			}
+			ntry=0;
+			do{
+				motherpart->resinfo->DecayGetResInfoPtr(nbodies,daughterresinfo);
+				
+				mtot=0.0;
+				for(ibody=1;ibody<=nbodies;ibody++){
+					masses[ibody]=daughterresinfo[ibody-1]->mass;
+					mtot+=masses[ibody];
+				}
+				ntry+=1;
+				if(ntry>100){
+					motherpart->resinfo->Print();
+					CLog::Info("mothermass="+to_string(masses[0])+", minmass="+to_string(motherpart->resinfo->minmass)+"\n");
+					CLog::Fatal("cannot find channel\n");
+				}
+			}while(mtot>masses[0]);
 			
 			for(alpha=0;alpha<4;alpha++)
 				u[alpha]=motherpart->p[alpha]/masses[0];
-			double u2=u[0]*u[0]-u[1]*u[1]-u[2]*u[2]-u[3]*u[3];
-			if(fabs(u2-1.0)>0.0001){
-				printf("1=?%g, mtot=%g, mothermass=%g\\\n",u2,mtot,masses[0]);
-				printf("p_mother=(%g,%g,%g,%g)\n",motherpart->p[0],motherpart->p[1],motherpart->p[2],motherpart->p[3]);
-				exit(1);
-			}
 			//
 			Decay.SetMasses(nbodies,masses);
 			Decay.GenerateMomenta(pdaughter);
@@ -77,9 +87,25 @@ void DecayParts(Crandy *randyset,CpartList *partlist){
 					dpart=&(partlist->partvec[idaughter]);
 					dpart->EQWeightVec=motherpart->EQWeightVec;
 				}
+				dpart->EQWeightVec=EQWeightVecTmp;
 				dpart->p=pdaughter[ibody];
 				dpart->SetMsquared();
-				Misc::Boost(u,dpart->p,dpart->p);
+				Misc::Boost(u,dpart->p,pprime);
+				for(alpha=0;alpha<4;alpha++)
+					dpart->p[alpha]=pprime[alpha];
+				for(a=0;a<3;a++){
+					qafter[a]+=dpart->resinfo->q[a];
+				}
+				for(alpha=0;alpha<4;alpha++){
+					pafter[alpha]+=dpart->p[alpha];
+				}
+			}
+			for(a=0;a<3;a++){
+				if(qbefore[a]!=qafter[a]){
+					snprintf(message,CLog::CHARLENGTH,"qbefore=(%d,%d,%d),qafter=(%d,%d,%d)\n",qbefore[0],qbefore[1],qbefore[2],
+					qafter[0],qafter[1],qafter[2]);
+					CLog::Fatal(message);
+				}
 			}
 		}
 		if(!motherpart->resinfo->decay)
