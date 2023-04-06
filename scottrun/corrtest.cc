@@ -42,16 +42,22 @@ int main(){
 	for(ievent=0;ievent<ms.NEVENTS_TOT;ievent++){
 		ms.partlist=partlista;
 		npartsa=ms.MakeEvent();
-		npartstot+=nparts;
+		ms.partlist->SetEQWeight(hyper,EQTarget);
+		ms.partlist->IncrementEQTot(EQtot);
+		
+		
+		ms.partlist=partlistb;
+		npartsb=ms.MakeEvent();
 		ms.partlist->SetEQWeight(hyper,EQTarget);
 		ms.partlist->IncrementEQTot(EQtot);
 		
 		if(10*(ievent+1)%ms.NEVENTS_TOT==0){
 			printf("finished %lld percent\n",((ievent+1)*100)/ms.NEVENTS_TOT);
-			double nparts_target=hyper->nhadrons*hyper->udotdOmega*double(ievent);
-			printf("npartstot=%lld =? %g, ratio=%g\n",npartstot,nparts_target,npartstot/nparts_target);
 		}
 	}
+	
+	
+	
 	ms.ClearHyperList();
 	
 	for(i=0;i<7;i++){
