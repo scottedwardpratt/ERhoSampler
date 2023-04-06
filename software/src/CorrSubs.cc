@@ -47,7 +47,6 @@ CcorrVsY::CcorrVsY(){
 	}
 }
 
-
 // Dely=yb-ya
 void IncrementCorrVsY(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corrvseta,CcorrVsY *corrvsy,Crandy *randy){
 	Eigen::MatrixXd corrmatrix(7,7);
@@ -68,7 +67,7 @@ void IncrementCorrVsY(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corr
 		//for(imc=0;imc<NMC;imc++){
 		//ia=lrint(floor(randy->ran()*npartsa));
 		//ib=lrint(floor(randy->ran()*npartsb));
-		for(iaa=0;ia<npartsa;ia++){
+		for(ia=0;ia<npartsa;ia++){
 			for(ib=0;ib<npartsb;ib++){
 				parta=&(partlista->partvec[ia]);
 				partb=&(partlistb->partvec[ib]);
