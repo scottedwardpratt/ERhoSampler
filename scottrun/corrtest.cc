@@ -31,27 +31,20 @@ int main(){
 	Chyper *hyper=*(ms.hyperlist.begin());
 	hyper->Print();
 	
-	printf("check aa\n");
 	FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
-	printf("check bb\n");
 	hyper->Print();
 	
 	
 	sampler=ms.ChooseSampler(hyper);
 	printf("check cc, sampler->Tf=%g\n",sampler->Tf);
 	hyper->sampler=sampler;
-	//hyper->SetSampler(sampler);
-	printf("check dd, sampler->Tf=%g\n",sampler->Tf);
 	if(sampler!=hyper->sampler){
 		printf("B: WHAT!?!?\n");
 		exit(1);
 	}
-	printf("check ddd, hyper->sampler->Tf=%g\n",hyper->sampler->Tf);
 	
 	sampler->GetNHMu0();
-	printf("check ee\n");
 	sampler->GetMuNH(hyper);
-	printf("sampler->Tf=%g\n",sampler->Tf);
 	
 	sampler->CalcChi(hyper);
 	printf("-------- chi ----------\n");
