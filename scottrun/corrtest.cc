@@ -1,31 +1,10 @@
 #include "msu_ERhoSampler/master.h"
 #include "msu_commonutils/constants.h"
+#include "../software/src/ERhoSubs.cc"
+#include "../software/src/CorrSubs.cc"
 using namespace std;
 
 // This makes a dummy hyper-element then creates particles and tests yield and energy of created partilces of specific pid
-
-void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double eta,double deleta,
-double epsilon,double rhoB,double rhoII){
-	double V0=PI*R*R*tau*deleta;
-	hyper->T0=T;
-	hyper->sigma=0.093;
-	hyper->rhoB=rhoB;
-	hyper->rhoS=0.0;
-	hyper->rhoII=rhoII;
-	hyper->epsilon=epsilon;
-	hyper->muB=hyper->muS=hyper->muII=0.0;
-	hyper->u[1]=hyper->u[2]=hyper->u[3]=sinh(eta);
-	hyper->u[0]=sqrt(1.0+hyper->u[1]*hyper->u[1]+hyper->u[2]*hyper->u[2]+hyper->u[3]*hyper->u[3]);
-	hyper->r[1]=hyper->r[2]=hyper->r[3]=0.0;
-	hyper->r[0]=10.0;
-	for(int alpha=0;alpha<4;alpha++)
-		hyper->dOmega[alpha]=V0*hyper->u[alpha];//*2.0*ms.randy->ran();
-	hyper->udotdOmega=hyper->u[0]*hyper->dOmega[0]-hyper->u[1]*hyper->dOmega[1]
-		-hyper->u[2]*hyper->dOmega[2]-hyper->u[3]*hyper->dOmega[3];
-	for(int alpha=0;alpha<4;alpha++)
-		for(int beta=0;beta<4;beta++)
-			hyper->pitilde[alpha][beta]=0.0;
-}
 
 int main(){
 	Eigen::VectorXd EQTarget(7),EQtot(7);
@@ -41,10 +20,10 @@ int main(){
 	int nparts;
 	CparameterMap parmap;
 	parmap.ReadParsFromFile("parameters/parameters.txt");
-	parmap.ReadParsFromFile("parameters/boltzmann_parameters.txt");
 	CmasterSampler ms(&parmap);
-	CpartList *partlist=new CpartList(&parmap,ms.reslist);
-	ms.partlist=partlist;
+	CpartList *partlista=new CpartList(&parmap,ms.reslist);
+	CpartList *partlistb=new CpartList(&parmap,ms.reslist);
+	
 	ms.randy->reset(time(NULL));
 	ms.MakeDummyHyper(1);
 	Chyper *hyper=*(ms.hyperlist.begin());
@@ -61,8 +40,8 @@ int main(){
 	cout << hyper->chi << endl;
 	
 	for(ievent=0;ievent<ms.NEVENTS_TOT;ievent++){
-		// Perform events
-		nparts=ms.MakeEvent();
+		ms.partlist=partlista;
+		npartsa=ms.MakeEvent();
 		npartstot+=nparts;
 		ms.partlist->SetEQWeight(hyper,EQTarget);
 		ms.partlist->IncrementEQTot(EQtot);
