@@ -38,7 +38,7 @@ int main(){
 	
 	sampler=ms.ChooseSampler(hyper);
 	printf("check cc, sampler->Tf=%g\n",sampler->Tf);
-	//hyper->sampler=sampler;
+	hyper->sampler=sampler;
 	hyper->SetSampler(sampler);
 	printf("check dd, sampler->Tf=%g\n",sampler->Tf);
 	if(sampler!=hyper->sampler){
