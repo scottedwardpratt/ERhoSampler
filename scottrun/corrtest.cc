@@ -12,8 +12,9 @@ using namespace std;
 // This makes a dummy hyper-element then creates particles and tests yield and energy of created partilces of specific pid
 
 int main(){
-	//CcorrVsEta corrvseta;
-	//CcorrVsY corrvsy;
+	Chyper *hyper=new Chyper();
+	CcorrVsEta corrvseta;
+	CcorrVsY corrvsy;
 	long long int Ndecay=0,Noriginal=0;
 	Crandy *randy=new Crandy(time(NULL));
 	int ievent;
@@ -27,29 +28,30 @@ int main(){
 	CpartList *partlistb=new CpartList(&parmap,ms.reslist);
 	
 	ms.randy->reset(time(NULL));
-	ms.MakeDummyHyper(1);
-	Chyper *hyper=*(ms.hyperlist.begin());
-	hyper->Print();
+	ms.hyperlist.push_back(hyper);
 	
 	FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
-	hyper->Print();
+	//ms.MakeDummyHyper(1);
+	//Chyper *hyper=*(ms.hyperlist.begin());
 	
+	cout << hyper << " =? " << *(ms.hyperlist.begin()) << endl;
+	
+	//FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
 	
 	sampler=ms.ChooseSampler(hyper);
-	printf("check cc, sampler->Tf=%g\n",sampler->Tf);
 	hyper->sampler=sampler;
-	if(sampler!=hyper->sampler){
-		printf("B: WHAT!?!?\n");
-		exit(1);
-	}
 	
+	cout << sampler << " =? " << hyper->sampler << endl;
+	
+	sampler->CalcDensitiesMu0();
 	sampler->GetNHMu0();
 	sampler->GetMuNH(hyper);
-	
-	sampler->CalcChi(hyper);
-	printf("-------- chi ----------\n");
+
+	//sampler->CalcChi(hyper);
+	sampler->GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi);
+	printf("------ chi --------\n");
 	cout << hyper->chi << endl;
-	/*
+	
 	for(ievent=0;ievent<ms.NEVENTS_TOT;ievent++){
 		ms.partlist=partlista;
 		ms.MakeEvent();
@@ -57,7 +59,6 @@ int main(){
 		ms.partlist->SetEQWeightVec(hyper);
 		DecayParts(randy,partlista);
 		Ndecay+=partlista->nparts;
-		
 		
 		ms.partlist=partlistb;
 		ms.MakeEvent();
@@ -78,7 +79,7 @@ int main(){
 	ms.ClearHyperList();
 
 	delete partlista;
-	delete partlistb;*/
+	delete partlistb;
 	
 	return 0;
 }
