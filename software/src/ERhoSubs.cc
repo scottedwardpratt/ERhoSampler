@@ -14,7 +14,7 @@ void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double delet
 	hyper->r[1]=hyper->r[2]=hyper->r[3]=0.0;
 	hyper->r[0]=tau;
 	hyper->tau=tau;
-	hyper->sampler=NULL;
+	hyper->sampler=nullptr;
 	printf("check a\n");
 	for(int alpha=0;alpha<4;alpha++)
 		hyper->dOmega[alpha]=V0*hyper->u[alpha];//*2.0*ms.randy->ran();

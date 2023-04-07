@@ -21,18 +21,13 @@ void CcorrVsEta::GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
 	double Z=1.0/sqrt(2.0*PI);
 	for(a=0;a<7;a++){
 		for(b=0;b<7;b++){
-			corr(a,b)=Z*exp(-eta*eta/2.0);
-			if(a!=b){
-				if(a==1 || b==1 || a==2 || b==2)
-					corr(a,b)=0.0;
-				else if (a==3 || b==3){
-					corr(a,b)*=eta;
-					if(a==3)
-						corr(a,b)*=-1;
-				}
-			}
+			corr(a,b)=0.0;
+			if(a==b)
+				corr(a,b)=Z*exp(-eta*eta/2.0);
 		}
 	}
+	corr(0,3)=eta*Z*exp(-eta*eta/2.0);
+	corr(3,0)=-eta*Z*exp(-eta*eta/2.0);
 }
 
 CcorrVsY::CcorrVsY(){
