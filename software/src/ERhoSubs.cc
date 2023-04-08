@@ -15,7 +15,6 @@ void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double delet
 	hyper->r[0]=tau;
 	hyper->tau=tau;
 	hyper->sampler=nullptr;
-	printf("check a\n");
 	for(int alpha=0;alpha<4;alpha++)
 		hyper->dOmega[alpha]=V0*hyper->u[alpha];//*2.0*ms.randy->ran();
 	hyper->udotdOmega=hyper->u[0]*hyper->dOmega[0]-hyper->u[1]*hyper->dOmega[1]
@@ -23,7 +22,6 @@ void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double delet
 	for(int alpha=0;alpha<4;alpha++)
 		for(int beta=0;beta<4;beta++)
 			hyper->pitilde[alpha][beta]=0.0;
-	printf("check b\n");
 }
 
 void DecayParts(Crandy *randyset,CpartList *partlist){

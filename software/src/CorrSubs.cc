@@ -21,13 +21,11 @@ void CcorrVsEta::GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
 	double Z=1.0/sqrt(2.0*PI);
 	for(a=0;a<7;a++){
 		for(b=0;b<7;b++){
-			corr(a,b)=0.0;
-			if(a==b)
-				corr(a,b)=Z*exp(-eta*eta/2.0);
+			corr(a,b)=Z*exp(-eta*eta/2.0);
 		}
 	}
-	corr(0,3)=eta*Z*exp(-eta*eta/2.0);
-	corr(3,0)=-eta*Z*exp(-eta*eta/2.0);
+	//corr(0,3)=eta*Z*exp(-eta*eta/2.0);
+	//corr(3,0)=-eta*Z*exp(-eta*eta/2.0);
 }
 
 CcorrVsY::CcorrVsY(){
@@ -73,31 +71,35 @@ void IncrementCorrVsY(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corr
 				cweight=GetPairWeight(parta,partb,corrmatrix);
 		
 		
-				// For TESTING
+				/* For TESTING
 				ua[0]=cosh(-ya0);
 				ua[3]=sinh(-ya0);
 				ub[0]=cosh(DelY-yb0);
 				ub[3]=sinh(DelY-yb0);
 				Misc::Boost(ua,parta->p,pa);
-				Misc::Boost(ub,partb->p,pb);
-			
-				/*double DYTest=atanh(pa[3]/pa[0])-atanh(pb[3]/pb[0]);
-				printf("DelY=%g =? %g, ya=%g, yb=%g \n",DYTest,DelY,atanh(pa[3]/pa[0]),atanh(pb[3]/pb[0]));
-				Misc::Pause();*/
+				Misc::Boost(ub,partb->p,pb);*/
 			
 				resinfoa=parta->resinfo;
 				resinfob=partb->resinfo;
-				Qa[0]=pa[0];
-				Qa[1]=pa[1];
-				Qa[2]=pa[2];
-				Qa[3]=pa[3];
+				//Qa[0]=pa[0];
+				//Qa[1]=pa[1];
+				//Qa[2]=pa[2];
+				//Qa[3]=pa[3];
+				Qa[0]=parta->p[0];
+								Qa[1]=parta->p[1];
+												Qa[2]=parta->p[2];
+																Qa[3]=parta->p[3];
 				Qa[4]=resinfoa->baryon;
 				Qa[5]=resinfoa->q[0]-resinfoa->q[1];
 				Qa[6]=resinfoa->strange;
-				Qb[0]=pb[0];
-				Qb[1]=pb[1];
-				Qb[2]=pb[2];
-				Qb[3]=pb[3];
+				//Qb[0]=pb[0];
+				//Qb[1]=pb[1];
+				//Qb[2]=pb[2];
+				//Qb[3]=pb[3];
+				Qb[0]=partb->p[0];
+								Qb[1]=partb->p[1];
+												Qb[2]=partb->p[2];
+																Qb[3]=partb->p[3];
 				Qb[4]=resinfob->baryon;
 				Qb[5]=resinfob->q[0]-resinfob->q[1];
 				Qb[6]=resinfob->strange;
@@ -123,10 +125,10 @@ void CcorrVsY::WriteResults(double decayratio){
 	for(a=0;a<7;a++){
 		for(b=0;b<7;b++){
 			sign=1;
-			if(a>0 && a<4 && (b==0 || b>=4))
+			/*if(a>0 && a<4 && (b==0 || b>=4))
 				sign=-1;
 			if(b>0 && b<4 && (a==0 || a>=4))
-				sign=-1;
+				sign=-1;*/
 			sum=0.0;
 			snprintf(filename,120,"corr_results/corr_%d_%d.txt",a,b);
 			fptr=fopen(filename,"w");
@@ -138,6 +140,51 @@ void CcorrVsY::WriteResults(double decayratio){
 			}
 			printf("sum[%d][%d]=%g\n",a,b,sum);
 			fclose(fptr);
+		}
+	}
+}
+
+void IncrementQtest(CpartList *partlist,Eigen::VectorXd &Qtot,Eigen::VectorXd &EQTarget){
+	int a,ia,nparts=partlist->nparts;
+	Eigen::VectorXd Q(7);
+	Cpart *part;
+	CresInfo *resinfo;
+	double weight;
+	for(ia=0;ia<nparts;ia++){
+		part=&(partlist->partvec[ia]);
+		resinfo=part->resinfo;
+		Q[0]=part->p[0];
+		Q[1]=part->p[1];
+		Q[2]=part->p[2];
+		Q[3]=part->p[3];
+		Q[4]=resinfo->baryon;
+		Q[5]=resinfo->q[0]-resinfo->q[1];
+		Q[6]=resinfo->strange;
+		weight=0.0;
+		for(a=0;a<7;a++){
+			weight+=part->EQWeightVec[a]*EQTarget[a];
+		}
+		for(a=0;a<7;a++)
+			Qtot[a]+=Q[a]*weight;
+	}
+}
+
+void Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest){
+	int a,b,ia,nparts=partlist->nparts;
+	Eigen::VectorXd Q(4);
+	Cpart *part;
+	CresInfo *resinfo;
+	for(ia=0;ia<nparts;ia++){
+		part=&(partlist->partvec[ia]);
+		resinfo=part->resinfo;
+		Q[0]=part->p[0];
+		Q[1]=resinfo->baryon;
+		Q[2]=resinfo->q[0]-resinfo->q[1];
+		Q[3]=resinfo->strange;
+		for(a=0;a<4;a++){
+			for(b=0;b<4;b++){
+				chitest(a,b)+=Q(a)*Q(b);
+			}
 		}
 	}
 }

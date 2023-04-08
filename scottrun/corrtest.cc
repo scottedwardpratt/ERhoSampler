@@ -3,90 +3,105 @@
 #include "msu_commonutils/decay_nbody.h"
 #include "msu_sampler/sampler.h"
 
+using namespace std;
 #include "../software/src/ERhoSubs.cc"
 #include "../software/src/CorrSubs.cc"
 
 
-using namespace std;
-
 // This makes a dummy hyper-element then creates particles and tests yield and energy of created partilces of specific pid
 
 int main(){
+	Crandy *randy=new Crandy(1234);
+	CparameterMap parmap;
+	parmap.ReadParsFromFile("parameters/parameters.txt");
+	int NEVENTS_TOT=parmap.getI("NEVENTS_TOT",10);
+	Eigen::MatrixXd chi4test(4,4);
+	Eigen::VectorXd EQtot(7),EQTarget(7);
+	for(int a=0;a<7;a++){
+		EQtot(a)=0.0;
+		EQTarget(a)=1.0;
+	}
+	
+	CresList *reslist=new CresList(&parmap);
+	Csampler::reslist=reslist;
+	Csampler::randy=randy;
+	Csampler::parmap=&parmap;
+	Csampler::CALCMU=true;
+	Csampler::SETMU0=false;
+	Csampler::USE_POLE_MASS=true;
+	Csampler::mastersampler=nullptr;
+	CresInfo::randy=randy;
+	
 	Chyper *hyper=new Chyper();
 	CcorrVsEta corrvseta;
 	CcorrVsY corrvsy;
+	
 	long long int Ndecay=0,Noriginal=0;
-	Crandy *randy=new Crandy(1234);
 	int ievent;
 	double T=0.150,tau=10.0,R=5.0,deleta=0.05;
 	double rhoB=0.1,rhoII=0.03;
-	Csampler *sampler;
-	CparameterMap parmap;
-	parmap.ReadParsFromFile("parameters/parameters.txt");
-	CmasterSampler ms(&parmap);
-	CpartList *partlista=new CpartList(&parmap,ms.reslist);
-	CpartList *partlistb=new CpartList(&parmap,ms.reslist);
+	Csampler *sampler=new Csampler(T,0.093);
 	
-	ms.randy->reset(time(NULL));
-	ms.hyperlist.push_back(hyper);
+	CpartList *partlista=new CpartList(&parmap,reslist);
+	CpartList *partlistb=new CpartList(&parmap,reslist);
 	
 	FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
-	//ms.MakeDummyHyper(1);
-	//Chyper *hyper=*(ms.hyperlist.begin());
-	
-	//FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
-	
-	sampler=ms.ChooseSampler(hyper);
 	hyper->sampler=sampler;
 	
 	sampler->CalcDensitiesMu0();
 	sampler->GetNHMu0();
 	sampler->GetMuNH(hyper);
-
-	//sampler->CalcChi(hyper);
-	sampler->GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi);
-	printf("------ chi --------\n");
-	cout << hyper->chi << endl;
-	printf("-------------------\n");
 	
-	for(ievent=0;ievent<ms.NEVENTS_TOT;ievent++){
-		ms.partlist=partlista;
-		printf("Calling MakeEvent (a)\n");
-		ms.MakeEvent();
-		printf("Event made\n");
-		Noriginal+=partlista->nparts;
-		printf("Calling SetEQWeightVec\n");
-		ms.partlist->SetEQWeightVec(hyper);
-		printf("Calling DecayParts\n");
-		DecayParts(randy,partlista);
-		printf("Exited DecayParts\n");
-		Ndecay+=partlista->nparts;
+	sampler->GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
+	hyper->chi4inv=hyper->chi4.inverse();
+	hyper->epsilon_calculated=true;
+	sampler->CalcNHadrons(hyper);
+	
+	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
+		sampler->partlist=partlista;
 		
-		ms.partlist=partlistb;
-		printf("Calling MakeEvent (b)\n");
-		ms.MakeEvent();
-		printf("Event made\n");
+		sampler->MakeParts(hyper);
+		Noriginal+=partlista->nparts;
+		
+		partlista->SetEQWeightVec(hyper);
+		//DecayParts(randy,partlista);
+		Ndecay+=partlista->nparts;
+		Chi4Test(partlistb,chi4test);
+		
+		//IncrementQtest(partlista,EQtot,EQTarget);
+		partlista->TestEQWeights(EQtot,EQTarget);
+		Chi4Test(partlista,chi4test);
+		
+		sampler->partlist=partlistb;
+		sampler->MakeParts(hyper);
 		Noriginal+=partlistb->nparts;
-		printf("Calling SetEQWeightVec\n");
-		ms.partlist->SetEQWeightVec(hyper);
-		printf("Calling DecayParts\n");
-		DecayParts(randy,partlistb);
-		printf("Exited DecayParts\n");
+		partlistb->SetEQWeightVec(hyper);
+		//DecayParts(randy,partlistb);
 		Ndecay+=partlistb->nparts;
 		
-		printf("Ready to Increment\n");
-		IncrementCorrVsY(partlista,partlistb,&corrvseta,&corrvsy,randy);
-		printf("Incremented\n");
+		//IncrementQtest(partlistb,EQtot,EQTarget);
+		partlistb->TestEQWeights(EQtot,EQTarget);
+		Chi4Test(partlistb,chi4test);
 		
-		if(10*(ievent+1)%ms.NEVENTS_TOT==0){
-			printf("finished %lld percent\n",((ievent+1)*100)/ms.NEVENTS_TOT);
+		IncrementCorrVsY(partlista,partlistb,&corrvseta,&corrvsy,randy);
+		partlista->Clear();
+		partlistb->Clear();
+		
+		if(10*(ievent+1)%NEVENTS_TOT==0){
+			printf("finished %d percent\n",((ievent+1)*100)/NEVENTS_TOT);
 		}
 	}
 	
+	chi4test=chi4test/(2*hyper->udotdOmega*NEVENTS_TOT);
+	printf("------- chi4test --------\n");
+	cout << chi4test << endl;
+	printf("-------------------------\n");
+		
+	EQtot=EQtot/(2*hyper->udotdOmega*NEVENTS_TOT);
+	cout << "EQtot=\n" << EQtot << endl;
+	
 	corrvsy.WriteResults(double(Ndecay)/double(Noriginal));
 	
-	ms.ClearHyperList();
-
 	delete partlista;
 	delete partlistb;
 	
