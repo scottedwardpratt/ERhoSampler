@@ -4,6 +4,7 @@
 #include "msu_sampler/sampler.h"
 
 using namespace std;
+#include "../software/include/msu_ERhoSampler/ERhoSubs.h"
 #include "../software/src/ERhoSubs.cc"
 #include "../software/src/CorrSubs.cc"
 

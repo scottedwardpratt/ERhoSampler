@@ -1,5 +1,3 @@
-double GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMatrix);
-	
 class CcorrVsEta{
 public:
 	double DETA;
@@ -28,8 +26,11 @@ void CcorrVsEta::GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
 	//corr(3,0)=-eta*Z*exp(-eta*eta/2.0);
 }
 
-CcorrVsY::CcorrVsY(){
+CcorrVsY::CcorrVsY(CparameterMap *parmap_set){
+	parmap=parmap_set;
 	int a,b,iy;
+	DY=parmap->getD("MSU_ERHOSAMPLER_DY",0.1);
+	NY=parmap->getI("MSU_ERHOSAMPLER_DY",100);
 	corr.resize(NY);
 	denom.resize(NY);
 	for(iy=0;iy<NY;iy++){
@@ -41,7 +42,7 @@ CcorrVsY::CcorrVsY(){
 }
 
 // Dely=yb-ya
-void IncrementCorrVsY(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corrvseta,CcorrVsY *corrvsy,Crandy *randy){
+void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corrvseta){
 	Eigen::MatrixXd corrmatrix(7,7);
 	Eigen::VectorXd Qa(7),Qb(7);
 	FourVector pa,pb,ua,ub;
@@ -54,8 +55,8 @@ void IncrementCorrVsY(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corr
 	npartsb=partlistb->nparts;
 	ua[1]=ua[2]=ub[1]=ub[2]=0.0;
 	
-	for(iy=0;iy<corrvsy->NY;iy++){
-		DelY=(iy+0.5)*corrvsy->DY;
+	for(iy=0;iy<NY;iy++){
+		DelY=(iy+0.5)*DY;
 	
 		//for(imc=0;imc<NMC;imc++){
 		//ia=lrint(floor(randy->ran()*npartsa));
@@ -104,17 +105,29 @@ void IncrementCorrVsY(CpartList *partlista,CpartList *partlistb,CcorrVsEta *corr
 				Qb[5]=resinfob->q[0]-resinfob->q[1];
 				Qb[6]=resinfob->strange;
 		
-				corrvsy->denom[iy]+=1.0;
+				denom[iy]+=1.0;
 	
 				for(a=0;a<7;a++){
 					for(b=0;b<7;b++){
-						corrvsy->corr[iy](a,b)+=Qa[a]*Qb[b]*cweight;
+						corr[iy](a,b)+=Qa[a]*Qb[b]*cweight;
 					}
 				}
 			}
 			//
 		}
 	}
+}
+
+
+double CcorrVsY::GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMatrix){
+	int i,j;
+	double weight=0.0;
+	for(i=0;i<7;i++){
+		for (j=0;j<7;j++){
+			weight+=part1->EQWeightVec[i]*CorrMatrix(i,j)*part2->EQWeightVec[j];
+		}
+	}
+	return weight;
 }
 
 void CcorrVsY::WriteResults(double decayratio){
