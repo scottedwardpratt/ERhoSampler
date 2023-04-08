@@ -1,4 +1,4 @@
-// This makes a dummy hyper-element then creates particles and tests yield and energy of created partilces of specific pid
+#include "msu_erhosampler/erhosampler.h"
 
 namespace MSU_ERrhoSampler{
 

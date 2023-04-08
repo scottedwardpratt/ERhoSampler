@@ -5,6 +5,7 @@
 #include "msu_sampler/part.h"
 #include "msu_sampler/classdefs.h"
 #include "msu_sampler/master.h"
+#include "msu_sampler/sampler.h"
 #include "msu_eos/eos.h"
 #include "msu_commonutils/log.h"
 #include "msu_commonutils/randy.h"

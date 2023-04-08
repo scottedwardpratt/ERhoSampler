@@ -1,3 +1,5 @@
+#include "msu_erhosampler/erhosampler.h"
+
 class CcorrVsEta{
 public:
 	double DETA;
