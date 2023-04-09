@@ -1,12 +1,13 @@
 #include "msu_erhosampler/erhosampler.h"
 
-void NMSU_ERrhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double deleta,double rhoB,double rhoII){
+void NMSU_ERrhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double deleta,double rhoB,double rhoQ){
 	double V0=PI*R*R*tau*deleta;
 	hyper->T0=T;
 	hyper->sigma=0.093;
 	hyper->rhoB=rhoB;
 	hyper->rhoS=0.0;
-	hyper->rhoII=rhoII;
+	hyper->rhoQ=rhoQ;
+	hyper->rhoII=2.0*rhoQ-rhoB;
 	hyper->epsilon=0.3;
 	hyper->muB=hyper->muS=hyper->muII=0.0;
 	hyper->u[1]=hyper->u[2]=hyper->u[3]=0.0;
@@ -131,7 +132,7 @@ void NMSU_ERrhoSampler::IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQt
 		Q[2]=part->p[2];
 		Q[3]=part->p[3];
 		Q[4]=resinfo->baryon;
-		Q[5]=resinfo->q[0]-resinfo->q[1];
+		Q[5]=resinfo->charge;
 		Q[6]=resinfo->strange;
 		weight=0.0;
 		for(a=0;a<7;a++){
@@ -152,7 +153,7 @@ void NMSU_ERrhoSampler::Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest){
 		resinfo=part->resinfo;
 		Q[0]=part->p[0];
 		Q[1]=resinfo->baryon;
-		Q[2]=resinfo->q[0]-resinfo->q[1];
+		Q[2]=resinfo->charge;
 		Q[3]=resinfo->strange;
 		for(a=0;a<4;a++){
 			for(b=0;b<4;b++){

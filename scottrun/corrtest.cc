@@ -37,40 +37,38 @@ int main(){
 	
 	int ievent;
 	double T=0.150,tau=10.0,R=5.0,deleta=0.05;
-	double rhoB=0.1,rhoII=0.03;
+	double rhoB=0.1,rhoQ;
+	rhoQ=0.4*rhoB;
 	Csampler *sampler=new Csampler(T,0.093);
 	
 	CpartList *partlista=new CpartList(&parmap,reslist);
 	CpartList *partlistb=new CpartList(&parmap,reslist);
 	
-	NMSU_ERrhoSampler::FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
+	NMSU_ERrhoSampler::FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoQ);
 	hyper->sampler=sampler;
 	
 	sampler->CalcDensitiesMu0();
 	sampler->GetNHMu0();
 	sampler->GetMuNH(hyper);
 	
-	sampler->CalcChiSlow(hyper);
+	sampler->CalcChi4BQS(hyper);
 	
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
 		sampler->partlist=partlista;
-		
 		sampler->MakeParts(hyper);
 		
 		partlista->SetEQWeightVec(hyper);
-		//DecayParts(randy,partlista);
-		NMSU_ERrhoSampler::Chi4Test(partlistb,chi4test);
+		NMSU_ERrhoSampler::DecayParts(randy,partlista);
 		
-		//IncrementQtest(partlista,EQtot,EQTarget);
 		partlista->TestEQWeights(EQtot,EQTarget);
 		NMSU_ERrhoSampler::Chi4Test(partlista,chi4test);
 		
 		sampler->partlist=partlistb;
 		sampler->MakeParts(hyper);
-		partlistb->SetEQWeightVec(hyper);
-		//DecayParts(randy,partlistb);
 		
-		//IncrementQtest(partlistb,EQtot,EQTarget);
+		partlistb->SetEQWeightVec(hyper);
+		NMSU_ERrhoSampler::DecayParts(randy,partlistb);
+		
 		partlistb->TestEQWeights(EQtot,EQTarget);
 		NMSU_ERrhoSampler::Chi4Test(partlistb,chi4test);
 		

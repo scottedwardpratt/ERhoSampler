@@ -83,7 +83,7 @@ void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *c
 				pb[3]=0.0;
 				pb[0]=sqrt(partb->p[0]*partb->p[0]-partb->p[3]*partb->p[3]);
 				Qa[4]=resinfoa->baryon;
-				Qa[5]=resinfoa->q[0]-resinfoa->q[1];
+				Qa[5]=resinfoa->charge;
 				Qa[6]=resinfoa->strange;
 				Qb[0]=pb[0];
 				Qb[1]=pb[1];
@@ -94,7 +94,7 @@ void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *c
 				//Qb[2]=partb->p[2];
 				//Qb[3]=partb->p[3];
 				Qb[4]=resinfob->baryon;
-				Qb[5]=resinfob->q[0]-resinfob->q[1];
+				Qb[5]=resinfob->charge;
 				Qb[6]=resinfob->strange;
 	
 				for(a=0;a<7;a++){
@@ -138,51 +138,6 @@ void CcorrVsY::WriteResults(){
 			}
 			printf("sum[%d][%d]=%g\n",a,b,sum);
 			fclose(fptr);
-		}
-	}
-}
-
-void IncrementQtest(CpartList *partlist,Eigen::VectorXd &Qtot,Eigen::VectorXd &EQTarget){
-	int a,i,nparts=partlist->nparts;
-	Eigen::VectorXd Q(7);
-	Cpart *part;
-	CresInfo *resinfo;
-	double weight;
-	for(i=0;i<nparts;i++){
-		part=&(partlist->partvec[i]);
-		resinfo=part->resinfo;
-		Q[0]=part->p[0];
-		Q[1]=part->p[1];
-		Q[2]=part->p[2];
-		Q[3]=part->p[3];
-		Q[4]=resinfo->baryon;
-		Q[5]=resinfo->q[0]-resinfo->q[1];
-		Q[6]=resinfo->strange;
-		weight=0.0;
-		for(a=0;a<7;a++){
-			weight+=part->EQWeightVec[a]*EQTarget[a];
-		}
-		for(a=0;a<7;a++)
-			Qtot[a]+=Q[a]*weight;
-	}
-}
-
-void Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest){
-	int a,b,ia,nparts=partlist->nparts;
-	Eigen::VectorXd Q(4);
-	Cpart *part;
-	CresInfo *resinfo;
-	for(ia=0;ia<nparts;ia++){
-		part=&(partlist->partvec[ia]);
-		resinfo=part->resinfo;
-		Q[0]=part->p[0];
-		Q[1]=resinfo->baryon;
-		Q[2]=resinfo->q[0]-resinfo->q[1];
-		Q[3]=resinfo->strange;
-		for(a=0;a<4;a++){
-			for(b=0;b<4;b++){
-				chitest(a,b)+=Q(a)*Q(b);
-			}
 		}
 	}
 }
