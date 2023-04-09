@@ -2,17 +2,15 @@
 #include "msu_commonutils/randy.h"
 #include "msu_commonutils/decay_nbody.h"
 #include "msu_sampler/sampler.h"
+#include "msu_erhosampler/erhosampler.h"
 
 using namespace std;
-#include "../software/include/msu_ERhoSampler/ERhoSubs.h"
-#include "../software/src/ERhoSubs.cc"
-#include "../software/src/CorrSubs.cc"
 
 
 // This makes a dummy hyper-element then creates particles and tests yield and energy of created partilces of specific pid
 
 int main(){
-	Crandy *randy=new Crandy(1234);
+	Crandy *randy=new Crandy(time(NULL));
 	CparameterMap parmap;
 	parmap.ReadParsFromFile("parameters/parameters.txt");
 	int NEVENTS_TOT=parmap.getI("NEVENTS_TOT",10);
@@ -34,10 +32,9 @@ int main(){
 	CresInfo::randy=randy;
 	
 	Chyper *hyper=new Chyper();
-	CcorrVsEta corrvseta;
-	CcorrVsY corrvsy;
+	CcorrVsEtaScott corrvseta;
+	CcorrVsY corrvsy(&parmap);
 	
-	long long int Ndecay=0,Noriginal=0;
 	int ievent;
 	double T=0.150,tau=10.0,R=5.0,deleta=0.05;
 	double rhoB=0.1,rhoII=0.03;
@@ -46,45 +43,38 @@ int main(){
 	CpartList *partlista=new CpartList(&parmap,reslist);
 	CpartList *partlistb=new CpartList(&parmap,reslist);
 	
-	FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
+	NMSU_ERrhoSampler::FillOutHyperBjorken(hyper,T,tau,R,deleta,rhoB,rhoII);
 	hyper->sampler=sampler;
 	
 	sampler->CalcDensitiesMu0();
 	sampler->GetNHMu0();
 	sampler->GetMuNH(hyper);
 	
-	sampler->GetEpsilonRhoChi(hyper->muB,hyper->muII,hyper->muS,hyper->epsilon,hyper->rhoB,hyper->rhoII,hyper->rhoS,hyper->chi4);
-	hyper->chi4inv=hyper->chi4.inverse();
-	hyper->epsilon_calculated=true;
-	sampler->CalcNHadrons(hyper);
+	sampler->CalcChiSlow(hyper);
 	
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
 		sampler->partlist=partlista;
 		
 		sampler->MakeParts(hyper);
-		Noriginal+=partlista->nparts;
 		
 		partlista->SetEQWeightVec(hyper);
 		//DecayParts(randy,partlista);
-		Ndecay+=partlista->nparts;
-		Chi4Test(partlistb,chi4test);
+		NMSU_ERrhoSampler::Chi4Test(partlistb,chi4test);
 		
 		//IncrementQtest(partlista,EQtot,EQTarget);
 		partlista->TestEQWeights(EQtot,EQTarget);
-		Chi4Test(partlista,chi4test);
+		NMSU_ERrhoSampler::Chi4Test(partlista,chi4test);
 		
 		sampler->partlist=partlistb;
 		sampler->MakeParts(hyper);
-		Noriginal+=partlistb->nparts;
 		partlistb->SetEQWeightVec(hyper);
 		//DecayParts(randy,partlistb);
-		Ndecay+=partlistb->nparts;
 		
 		//IncrementQtest(partlistb,EQtot,EQTarget);
 		partlistb->TestEQWeights(EQtot,EQTarget);
-		Chi4Test(partlistb,chi4test);
+		NMSU_ERrhoSampler::Chi4Test(partlistb,chi4test);
 		
-		IncrementCorrVsY(partlista,partlistb,&corrvseta,&corrvsy,randy);
+		corrvsy.Increment(partlista,partlistb,&corrvseta);
 		partlista->Clear();
 		partlistb->Clear();
 		
@@ -98,10 +88,10 @@ int main(){
 	cout << chi4test << endl;
 	printf("-------------------------\n");
 		
-	EQtot=EQtot/(2*hyper->udotdOmega*NEVENTS_TOT);
+	EQtot=EQtot/(2*NEVENTS_TOT);
 	cout << "EQtot=\n" << EQtot << endl;
 	
-	corrvsy.WriteResults(double(Ndecay)/double(Noriginal));
+	corrvsy.WriteResults();
 	
 	delete partlista;
 	delete partlistb;

@@ -1,27 +1,25 @@
 #include "msu_erhosampler/erhosampler.h"
 
-class CcorrVsEta{
-public:
-	double DETA;
-	void GetCorrVsEta(double eta,Eigen::MatrixXd &corr);
-};
+using namespace NMSU_ERrhoSampler;
 
-class CcorrVsY{
-public:
-	const double DY=0.1;
-	const int NY=100;
-	vector<Eigen::MatrixXd> corr;
-	vector<double> denom;
-	void WriteResults(double decayratio);
-	CcorrVsY();
-};
-
-void CcorrVsEta::GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
+void CcorrVsEtaScott::GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
 	int a,b;
 	double Z=1.0/sqrt(2.0*PI);
 	for(a=0;a<7;a++){
 		for(b=0;b<7;b++){
-			corr(a,b)=Z*exp(-eta*eta/2.0);
+			corr(a,b)=0.0;
+			if((a==0 ||a>3) && (b==0||b>3)){
+				corr(a,b)=Z*exp(-eta*eta/2.0);
+			}
+			else if(a==b){
+				corr(a,b)=Z*exp(-eta*eta/2.0);
+			}
+			else if(a==3 && (b==0||b>3)){
+				corr(a,b)=Z*eta*exp(-eta*eta/2.0);
+			}
+			else if(b==3 && (a==0||a>3)){
+				corr(a,b)=-Z*eta*exp(-eta*eta/2.0);
+			}
 		}
 	}
 	//corr(0,3)=eta*Z*exp(-eta*eta/2.0);
@@ -31,10 +29,10 @@ void CcorrVsEta::GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
 CcorrVsY::CcorrVsY(CparameterMap *parmap_set){
 	parmap=parmap_set;
 	int a,b,iy;
+	denom=0.0;
 	DY=parmap->getD("MSU_ERHOSAMPLER_DY",0.1);
-	NY=parmap->getI("MSU_ERHOSAMPLER_DY",100);
+	NY=parmap->getI("MSU_ERHOSAMPLER_DY",200);
 	corr.resize(NY);
-	denom.resize(NY);
 	for(iy=0;iy<NY;iy++){
 		corr[iy].resize(7,7);
 		for(a=0;a<7;a++)
@@ -49,20 +47,16 @@ void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *c
 	Eigen::VectorXd Qa(7),Qb(7);
 	FourVector pa,pb,ua,ub;
 	CresInfo *resinfoa,*resinfob;
-	//long long int imc,NMC=lrint(partlista->nparts*partlistb->nparts);
 	int npartsa,npartsb,a,b,iy,ia,ib;
 	double ya0,yb0,DelEta,cweight,DelY;
 	Cpart *parta,*partb;
 	npartsa=partlista->nparts;
 	npartsb=partlistb->nparts;
+	denom+=1;
 	ua[1]=ua[2]=ub[1]=ub[2]=0.0;
 	
 	for(iy=0;iy<NY;iy++){
-		DelY=(iy+0.5)*DY;
-	
-		//for(imc=0;imc<NMC;imc++){
-		//ia=lrint(floor(randy->ran()*npartsa));
-		//ib=lrint(floor(randy->ran()*npartsb));
+		DelY=(-(NY/2)+iy+0.5)*DY;
 		for(ia=0;ia<npartsa;ia++){
 			for(ib=0;ib<npartsb;ib++){
 				parta=&(partlista->partvec[ia]);
@@ -72,42 +66,36 @@ void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *c
 				DelEta=DelY+ya0-yb0;
 				corrvseta->GetCorrVsEta(DelEta,corrmatrix);
 				cweight=GetPairWeight(parta,partb,corrmatrix);
-		
-		
-				/* For TESTING
-				ua[0]=cosh(-ya0);
-				ua[3]=sinh(-ya0);
-				ub[0]=cosh(DelY-yb0);
-				ub[3]=sinh(DelY-yb0);
-				Misc::Boost(ua,parta->p,pa);
-				Misc::Boost(ub,partb->p,pb);*/
 			
 				resinfoa=parta->resinfo;
 				resinfob=partb->resinfo;
-				//Qa[0]=pa[0];
-				//Qa[1]=pa[1];
-				//Qa[2]=pa[2];
-				//Qa[3]=pa[3];
-				Qa[0]=parta->p[0];
-								Qa[1]=parta->p[1];
-												Qa[2]=parta->p[2];
-																Qa[3]=parta->p[3];
+				
+				pa[3]=0.0;
+				pa[0]=sqrt(parta->p[0]*parta->p[0]-parta->p[3]*parta->p[3]);
+				Qa[0]=pa[0];
+				Qa[1]=pa[1];
+				Qa[2]=pa[2];
+				Qa[3]=pa[3];
+				//Qa[0]=parta->p[0];
+				//Qa[1]=parta->p[1];
+				//Qa[2]=parta->p[2];
+				//Qa[3]=parta->p[3];
+				pb[3]=0.0;
+				pb[0]=sqrt(partb->p[0]*partb->p[0]-partb->p[3]*partb->p[3]);
 				Qa[4]=resinfoa->baryon;
 				Qa[5]=resinfoa->q[0]-resinfoa->q[1];
 				Qa[6]=resinfoa->strange;
-				//Qb[0]=pb[0];
-				//Qb[1]=pb[1];
-				//Qb[2]=pb[2];
-				//Qb[3]=pb[3];
-				Qb[0]=partb->p[0];
-								Qb[1]=partb->p[1];
-												Qb[2]=partb->p[2];
-																Qb[3]=partb->p[3];
+				Qb[0]=pb[0];
+				Qb[1]=pb[1];
+				Qb[2]=pb[2];
+				Qb[3]=pb[3];
+				//Qb[0]=partb->p[0];
+				//Qb[1]=partb->p[1];
+				//Qb[2]=partb->p[2];
+				//Qb[3]=partb->p[3];
 				Qb[4]=resinfob->baryon;
 				Qb[5]=resinfob->q[0]-resinfob->q[1];
 				Qb[6]=resinfob->strange;
-		
-				denom[iy]+=1.0;
 	
 				for(a=0;a<7;a++){
 					for(b=0;b<7;b++){
@@ -132,24 +120,19 @@ double CcorrVsY::GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMa
 	return weight;
 }
 
-void CcorrVsY::WriteResults(double decayratio){
-	int a,b,iy,sign;
+void CcorrVsY::WriteResults(){
+	int a,b,iy;
 	double DelY,C,sum=0.0;
 	FILE *fptr;
 	char filename[120];
 	for(a=0;a<7;a++){
 		for(b=0;b<7;b++){
-			sign=1;
-			/*if(a>0 && a<4 && (b==0 || b>=4))
-				sign=-1;
-			if(b>0 && b<4 && (a==0 || a>=4))
-				sign=-1;*/
 			sum=0.0;
 			snprintf(filename,120,"corr_results/corr_%d_%d.txt",a,b);
 			fptr=fopen(filename,"w");
 			for(iy=0;iy<NY;iy++){
-				DelY=DY*(iy+0.5);
-				C=decayratio*decayratio*(corr[iy](a,b)+sign*corr[iy](b,a))/denom[iy];
+				DelY=(-(NY/2)+iy+0.5)*DY;
+				C=corr[iy](a,b)/denom;
 				fprintf(fptr,"%6.3f %g\n",DelY,C);
 				sum+=C*DY;
 			}
@@ -160,13 +143,13 @@ void CcorrVsY::WriteResults(double decayratio){
 }
 
 void IncrementQtest(CpartList *partlist,Eigen::VectorXd &Qtot,Eigen::VectorXd &EQTarget){
-	int a,ia,nparts=partlist->nparts;
+	int a,i,nparts=partlist->nparts;
 	Eigen::VectorXd Q(7);
 	Cpart *part;
 	CresInfo *resinfo;
 	double weight;
-	for(ia=0;ia<nparts;ia++){
-		part=&(partlist->partvec[ia]);
+	for(i=0;i<nparts;i++){
+		part=&(partlist->partvec[i]);
 		resinfo=part->resinfo;
 		Q[0]=part->p[0];
 		Q[1]=part->p[1];
