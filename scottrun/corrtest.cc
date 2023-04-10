@@ -14,21 +14,8 @@ int main(){
 	CparameterMap parmap;
 	parmap.ReadParsFromFile("parameters/parameters.txt");
 	int NEVENTS_TOT=parmap.getI("NEVENTS_TOT",10);
-	Eigen::MatrixXd chi4test(4,4);
-	Eigen::VectorXd EQtot(7),EQTarget(7);
-	for(int a=0;a<7;a++){
-		EQtot(a)=0.0;
-		EQTarget(a)=1.0;
-	}
 	
 	CresList *reslist=new CresList(&parmap);
-	Csampler::reslist=reslist;
-	Csampler::randy=randy;
-	Csampler::parmap=&parmap;
-	Csampler::CALCMU=true;
-	Csampler::SETMU0=false;
-	Csampler::USE_POLE_MASS=true;
-	Csampler::mastersampler=nullptr;
 	CresInfo::randy=randy;
 	
 	Chyper *hyper=new Chyper();
@@ -39,7 +26,7 @@ int main(){
 	double T=0.150,tau=10.0,R=5.0,deleta=0.05;
 	double rhoB=0.1,rhoQ;
 	rhoQ=0.4*rhoB;
-	Csampler *sampler=new Csampler(T,0.093);
+	Csampler *sampler=new Csampler(T,0.093,&parmap,reslist,randy);
 	
 	CpartList *partlista=new CpartList(&parmap,reslist);
 	CpartList *partlistb=new CpartList(&parmap,reslist);
@@ -50,7 +37,6 @@ int main(){
 	sampler->CalcDensitiesMu0();
 	sampler->GetNHMu0();
 	sampler->GetMuNH(hyper);
-	
 	sampler->CalcChi4BQS(hyper);
 	
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
@@ -60,17 +46,12 @@ int main(){
 		partlista->SetEQWeightVec(hyper);
 		NMSU_ERrhoSampler::DecayParts(randy,partlista);
 		
-		partlista->TestEQWeights(EQtot,EQTarget);
-		NMSU_ERrhoSampler::Chi4Test(partlista,chi4test);
 		
 		sampler->partlist=partlistb;
 		sampler->MakeParts(hyper);
 		
 		partlistb->SetEQWeightVec(hyper);
 		NMSU_ERrhoSampler::DecayParts(randy,partlistb);
-		
-		partlistb->TestEQWeights(EQtot,EQTarget);
-		NMSU_ERrhoSampler::Chi4Test(partlistb,chi4test);
 		
 		corrvsy.Increment(partlista,partlistb,&corrvseta);
 		partlista->Clear();
@@ -80,14 +61,6 @@ int main(){
 			printf("finished %d percent\n",((ievent+1)*100)/NEVENTS_TOT);
 		}
 	}
-	
-	chi4test=chi4test/(2*hyper->udotdOmega*NEVENTS_TOT);
-	printf("------- chi4test --------\n");
-	cout << chi4test << endl;
-	printf("-------------------------\n");
-		
-	EQtot=EQtot/(2*NEVENTS_TOT);
-	cout << "EQtot=\n" << EQtot << endl;
 	
 	corrvsy.WriteResults();
 	
