@@ -14,4 +14,4 @@ file(GLOB erhosampler_src ${CMAKE_CURRENT_SOURCE_DIR}/src/**.cc)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "lib")
 add_library(msu_erhosampler STATIC ${erhosampler_src})
-target_link_libraries(msu_erhosampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY})
+
