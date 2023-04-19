@@ -19,6 +19,7 @@ namespace NMSU_ERrhoSampler{
 	void DecayParts(Crandy *randyset,CpartList *partlist);
 	void IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget);
 	void Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest);
+	void GetDecayCorrs(CparameterMap *parmap,Crandy *randy,CpartList *motherpartlist);
 }
 
 class CcorrVsEta{
@@ -51,6 +52,17 @@ public:
 	double GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMatrix);
 	void WriteResults();
 	
+};
+
+class CdecayCorrVsY{
+public:
+	CparameterMap *parmap;
+	double DY;
+	int NY;
+	CdecayCorrVsY(CparameterMap *parmap);
+	vector<Eigen::MatrixXd> corr;
+	void Increment(CpartList *partlist);
+	void WriteResults();
 };
 
 

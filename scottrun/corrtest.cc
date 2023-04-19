@@ -42,6 +42,14 @@ int main(){
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
 		sampler->partlist=partlista;
 		sampler->MakeParts(hyper);
+		NMSU_ERrhoSampler::GetDecayCorrs(&parmap,randy,partlista);
+	}
+	exit(1);
+	
+	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
+		sampler->partlist=partlista;
+		sampler->MakeParts(hyper);
+		
 		
 		partlista->SetEQWeightVec(hyper);
 		NMSU_ERrhoSampler::DecayParts(randy,partlista);
