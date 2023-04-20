@@ -23,8 +23,8 @@ int main(){
 	CcorrVsY corrvsy(&parmap);
 	
 	int ievent;
-	double T=0.150,tau=10.0,R=5.0,deleta=0.05;
-	double rhoB=0.1,rhoQ;
+	double T=0.150,tau=11.0,R=5.0,deleta=0.05;
+	double rhoB=0.16*8/11,rhoQ;
 	rhoQ=0.4*rhoB;
 	Csampler *sampler=new Csampler(T,0.093,&parmap,reslist,randy);
 	
