@@ -104,7 +104,7 @@ void CcorrVsY::WriteResults(){
 	for(a=0;a<7;a++){
 		for(b=0;b<7;b++){
 			sum=0.0;
-			snprintf(filename,120,"corr_results/corr_%d_%d.txt",a,b);
+			snprintf(filename,120,"hydrocorr_results/corr_%d_%d.txt",a,b);
 			fptr=fopen(filename,"w");
 			for(iy=0;iy<NY;iy++){
 				DelY=(-(NY/2)+iy+0.5)*DY;

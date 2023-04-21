@@ -1,7 +1,7 @@
 #include "msu_erhosampler/erhosampler.h"
 
-void NMSU_ERrhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double deleta,double rhoB,double rhoQ){
-	double V0=PI*R*R*tau*deleta;
+void NMSU_ERrhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,double A,double deleta,double rhoB,double rhoQ){
+	double V0=A*tau*deleta;
 	hyper->T0=T;
 	hyper->sigma=0.093;
 	hyper->rhoB=rhoB;
@@ -115,8 +115,6 @@ void NMSU_ERrhoSampler::DecayParts(Crandy *randyset,CpartList *partlist){
 			imother++;
 	}
 }
-
-
 
 void NMSU_ERrhoSampler::IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
 	int a,ia,nparts=partlist->nparts;

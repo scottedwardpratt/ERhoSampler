@@ -14,11 +14,14 @@
 #include "msu_commonutils/decay_nbody.h"
 using namespace std;
 
+class CdecayCorrVsY;
+
 namespace NMSU_ERrhoSampler{
-	void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double R,double deleta,double rhoB,double rhoII);
+	void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double A,double deleta,double rhoB,double rhoII);
 	void DecayParts(Crandy *randyset,CpartList *partlist);
 	void IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget);
 	void Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest);
+	void GetDecayCorrs(CparameterMap *parmap,Crandy *randy,CpartList *motherpartlist,CdecayCorrVsY *decaycorr);
 }
 
 class CcorrVsEta{
@@ -67,7 +70,20 @@ public:
 	
 };
 
-
+class CdecayCorrVsY{
+public:
+	CparameterMap *parmap;
+	double DY;
+	int NY;
+	Crandy *randy;
+	CdecayCorrVsY(CparameterMap *parmap);
+	vector<Eigen::MatrixXd> corr;
+	double denom;
+	void Increment(CpartList *partlist);
+	double GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMatrix);
+	void WriteResults();
+	
+};
 
 
 #endif
