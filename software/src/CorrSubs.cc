@@ -7,7 +7,7 @@ CcorrVsY::CcorrVsY(CparameterMap *parmap_set){
 	int a,b,iy;
 	denom=0.0;
 	DY=parmap->getD("MSU_ERHOSAMPLER_DY",0.1);
-	NY=parmap->getI("MSU_ERHOSAMPLER_DY",200);
+	NY=parmap->getI("MSU_ERHOSAMPLER_NY",200);
 	corr.resize(NY);
 	for(iy=0;iy<NY;iy++){
 		corr[iy].resize(7,7);
@@ -41,6 +41,10 @@ void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *c
 				yb0=partb->GetRapidity();
 				DelEta=DelY+ya0-yb0;
 				corrvseta->GetCorrVsEta(DelEta,corrmatrix);
+				for(int a=0;a<7;a++)
+					for(int b=0;b<7;b++)
+						if(a!=0 || b!=0)
+							corrmatrix(a,b)=0.0;
 				cweight=GetPairWeight(parta,partb,corrmatrix);
 			
 				resinfoa=parta->resinfo;

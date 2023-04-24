@@ -25,7 +25,7 @@ int main(){
 	
 	int ievent;
 	double T=0.150,tau=10.0,A=100.0,deleta=0.05;
-	double rhoB=0.1,rhoQ;
+	double rhoB=(8.0/11.0)*0.16,rhoQ;
 	rhoQ=0.4*rhoB;
 	Csampler *sampler=new Csampler(T,0.093,&parmap,reslist,randy);
 	
