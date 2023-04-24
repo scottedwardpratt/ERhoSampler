@@ -19,7 +19,8 @@ int main(){
 	CresInfo::randy=randy;
 	
 	Chyper *hyper=new Chyper();
-	CcorrVsEtaScott corrvseta;
+	//CcorrVsEtaScott corrvseta;
+	CcorrVsEtaOleh corrvseta;
 	CdecayCorrVsY decaycorrvsy(&parmap);
 	
 	int ievent;

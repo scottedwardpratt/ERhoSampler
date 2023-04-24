@@ -19,12 +19,12 @@ int main(){
 	CresInfo::randy=randy;
 	
 	Chyper *hyper=new Chyper();
-	//CcorrVsEtaScott corrvseta;
-	CcorrVsEtaOleh corrvseta;
+	CcorrVsEtaScott corrvseta;
+	//CcorrVsEtaOleh corrvseta;
 	CcorrVsY corrvsy(&parmap);
 	
 	int ievent;
-	double T=0.150,tau=10.0,A=100.0,deleta=0.05;
+	double T=0.150,tau=10.0,A=100.0,deleta=0.02;
 	double rhoB=0.1,rhoQ;
 	rhoQ=0.4*rhoB;
 	Csampler *sampler=new Csampler(T,0.093,&parmap,reslist,randy);

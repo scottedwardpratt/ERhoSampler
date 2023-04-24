@@ -84,7 +84,6 @@ void CcorrVsY::Increment(CpartList *partlista,CpartList *partlistb,CcorrVsEta *c
 	}
 }
 
-
 double CcorrVsY::GetPairWeight(Cpart *part1,Cpart *part2,Eigen::MatrixXd &CorrMatrix){
 	int i,j;
 	double weight=0.0;
