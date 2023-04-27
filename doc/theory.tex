@@ -1,6 +1,7 @@
 \documentclass[12pt]{article}
 \usepackage{subfiles}
 \usepackage{graphicx}
+\usepackage{relsize}
 \usepackage[
         pdfencoding=auto,%
         pdfauthor={Scott Pratt},%
@@ -80,33 +81,64 @@ arc=0pt,outer arc=0pt,
 
 \today\\
 
-\centerline{\bf\Large Fluctuation Theory}
+\centerline{\bf \large Fluctuation Theory}
 %\centerline{Oleh Savchuk and Scott Pratt}
 %\centerline{Michigan State University}
 
 \section{Sum Rules}
-After some effort,
+
+Because of energy and momentum conservation there must be an equivalent in expressing the integrated correlations in terms of the final measured particles, binned by their rapidity, and the terms of final-state thermodynamic quantities, binned by spatial rapidity. The integrated energy-energy correlation is
+\begin{align*}\eqnumber\label{eq:Eequil}
+\int dy_1dy_2&~\langle\delta E_t(y_1)\delta E_t(y_2)\rangle\cosh(y_1)\cosh(y_2)\\
+&=\int d\eta_1d\eta_2~\langle[\delta\epsilon(\eta_1)\cosh(\eta_1)+\delta\tilde{P}_z(\eta_1)\sinh(\eta_1)]\\
+&\hspace*{30pt}[\delta\epsilon(\eta_2)\cosh(\eta_2)+\delta\tilde{P}_z(\eta_2)\sinh(\eta_2)]\rangle.
+\end{align*}
+Here, $E_t(y)$ is the transverse energy per rapidity of final-state particles with rapidity $y$, $\epsilon(\eta)$ is the energy density at spatial rapidity $\eta$, and $\tilde{P}_z(\eta)$ is the momentum density. Both $\epsilon$ and $\tilde{P}_z$ refer to quantities evaluated in the local Bjorken frame. This is not quite the same as the local fluid frame unless $\tilde{P}_z$ is zero. Also, $\delta$ references the fluctuation relative to the smooth back ground. The energy, in the laboratory frame, of a final state particle with rapidity $y$ is $E_t\cosh(y)$. The energy from a fluid element of energy density $\epsilon$ and momentum density $\tilde{P}_z$ is $(\epsilon\cosh\eta+\tilde{P}_z\sinh\eta)\Omega$, where $\Omega$ is the volume of the fluid element. We will set $\Omega$ to unity for the purpose of brevity.
+
+Similarly, one can equate the integrated momentum correlations,
+\begin{align*}\eqnumber\label{eq:Pequil}
+\int dy_1dy_2&~\langle\delta E_t(y_1)\delta E_t(y_2)\rangle\sinh(y_1)\sinh(y_2)\\
+&=\int d\eta_1d\eta_2~\langle[\delta \tilde{P}_z(\eta_1)\cosh(\eta_1)+\delta\epsilon(\eta_1)\sinh(\eta_1)]\\\
+&\hspace*{30pt}[\delta\tilde{P}_z(\eta_2)\cosh(\eta_2)+\delta\epsilon(\eta_2)\sinh(\eta_2)]\rangle.
+\end{align*}
+One can replace $\int dy_1dy_2$ with $\int d\bar{y}d\Delta y$, where $\bar{y}=(y_1+y_2)/2$ and $\Delta y=y_1-y_2$. One can similarly replace the integral over $\eta_1$ and $\eta_2$ with the substitution $\bar{\eta}=(\eta_1+\eta_2)/2$ and $\Delta\eta=\eta_1-\eta_2$. If one adds Eq. (\ref{eq:Pequil}) to Eq. (\ref{eq:Eequil}), and applies angle addition formulas, one finds
+\begin{align*}\eqnumber\label{eq:intermed1}
+\int d\bar{y} &\cosh(2\bar{y})\int d\Delta y~\langle\delta E_t(\Delta y)E_t(0)\rangle\\
+&=\int d\bar{\eta}\cosh(2\bar{\eta})\int d\Delta\eta\langle
+[\delta\epsilon(\eta_1)\delta\epsilon(\eta_2)+\delta\tilde{P}_z(\eta_1)\delta\tilde{P}_z(\eta_2)\rangle\\
+\int d\bar{y} &\sinh(2\bar{y})\int d\Delta\eta
+\langle\delta\epsilon(\eta_1)\delta\tilde{P}_z(\eta_2)+\delta\tilde{P}_z(\eta_1)\delta\epsilon(\eta_2)\rangle.
+\end{align*}
+Next, one invokes the assumption of a Bjorken expansion. The boost invariance then demands that each thermal average, whether it is a function of $y_1$ and $y_2$, or $\eta_1$ or $\eta_2$, must depend only on the differences, $\Delta y=y_1-y_2$ and $\Delta\eta=\eta_2-\eta_2$. Further, due to reflection symmetry the quantities $\langle \epsilon(\Delta\eta)\tilde{P}_z(0)\rangle$ and $\langle \tilde{P}_z(\Delta\eta)\epsilon(0)\rangle$, must be odd functions in $\Delta\eta$. Thus, the last term in Eq. (\ref{eq:intermed1}) vanishes. Most importantly, the integrals over $\bar{y}$ and $\bar{\eta}$ should be the same, and can be factored out. This yields
+\begin{align*}
+\int d\Delta y&\langle \delta E_T(\Delta y)\delta E_T(0)\rangle\\
+&=\int d\Delta\eta\langle \delta\epsilon(\Delta\eta)\delta\epsilon(0)+\delta\tilde{P}_z(\Delta\eta)\delta\tilde{P}_z(0)\rangle.
+\end{align*}
+This relates the correlation of the energy and momentum of emitted particles of rapidity $y_1$ and $y_2$ to the correlations of the energy- and momentum-densities at positions $\eta_1$ and $\eta_2$. 
+
+If total charge and momentum were conserved, the net integrals should vanish. However, one can separate the correlation between particles with that of the particles with themselves. Assuming that the emissions are those of an ideal gas, the correlation in energy can be rewritten as
+\begin{align*}\eqnumber
+\langle \delta\epsilon(\eta_1)\delta\epsilon(\eta_2)\rangle_{\rm total}
+=\langle \delta\epsilon(\eta_1)\delta\epsilon(\eta_2)\rangle+\chi_{EE}\delta(\eta_1-\eta_2).
+\end{align*}
+Here, $\chi_{EE}=\langle\langle \delta E\delta E\rangle\rangle/\Omega$ is the thermalized energy fluctuation at equilibrium, i.e. the specific heat. Further, assuming one is emitting according to a non-interacting gas, that fluctuation is simply that of a particle with itself. One can do the same for the the momentum fluctuations. In that case, $\chi_{pp}=\langle\langle \delta \tilde{P}_z\delta \tilde{P}_z\rangle\rangle/\Omega=(P+\epsilon)/T$. Thus, if the thermal averaged quantities in the expressions concern correlations between particles, one finds
 \begin{align*}
 \int d\Delta y&\langle \delta E_T(\Delta y)\delta E_T(0)\rangle\\
 &=\int d\Delta\eta\langle \delta\epsilon(\Delta\eta)\delta\epsilon(0)+\delta\tilde{P}_z(\Delta\eta)\delta\tilde{P}_z(0)\rangle\\
 \eqnumber\label{eq:nocosh}
 &=-\chi_{EE}-\chi_{pp}.
 \end{align*}
+Again, this expression assumes that both the correlations in terms of relative rapidity, and the correlations of the thermal quantities in terms of relative spatial rapidity, both exclude correlations of particles with themselves.
 
-
+Equation (\ref{eq:nocosh}) was derived by considering the sum of the two constraints, Eq. (\ref{eq:Eequil}) and Eq. (\ref{eq:Pequil}). Another constraint can be obtained by considering the difference of the two constraints. In that case the hyperbolic functions that emerge are those involving $\Delta y$ and $\Delta\eta$, e.g. $\cosh(\Delta y)$ or $\cosh(\Delta\eta)$. Following the same steps as above, a second constraint can be derived,
 \begin{align*}
 \int d\Delta y &\langle \delta E_T(\Delta y)\delta E_T(0)\rangle\cosh(\Delta y)\\
-&=\int d\Delta\eta\large\{\langle \delta\epsilon(\Delta\eta)\delta\epsilon(0)-\delta\tilde{P}_z(\Delta\eta)\delta\tilde{P}_z(0)\rangle\cosh(\Delta y)]\\
-&~~~+\langle \delta\tilde{P}_z(\Delta\eta)\delta\epsilon(0)-\delta\epsilon(\Delta\eta)\delta\tilde{P}_z(0)\rangle\sinh(\Delta y)\large\}\\
+&=\int d\Delta\eta\mathlarger{\{}\langle \delta\epsilon(\Delta\eta)\delta\epsilon(0)-\delta\tilde{P}_z(\Delta\eta)\delta\tilde{P}_z(0)\rangle\cosh(\Delta y)]\\
+&~~~+\langle \delta\tilde{P}_z(\Delta\eta)\delta\epsilon(0)-\delta\epsilon(\Delta\eta)\delta\tilde{P}_z(0)\rangle\sinh(\Delta y)\mathlarger{\}}\\
 \eqnumber\label{eq:wcosh}
 &=-\chi_{EE}+\chi_{pp}.
 \end{align*}
-
-The susceptibilities can also be identified as:
-\begin{align*}\eqnumber
-\chi_{EE}=C_V,~~\chi_{pp}=(P+\epsilon)T.
-\end{align*}
-Also, the last 2 terms in Eq. (\ref{eq:wcosh} are equal
+The last 2 terms in Eq. (\ref{eq:wcosh} are equal
 \begin{align*}\eqnumber
 \langle\delta\tilde{P}_z(\Delta\eta)\delta\epsilon(0)\rangle=
 -\langle\delta\epsilon(\delta\eta)\delta\tilde{P}_z(0)\rangle.
@@ -115,20 +147,20 @@ Also, the last 2 terms in Eq. (\ref{eq:wcosh} are equal
 Equivalently, one can add  Eq.s(\ref{eq:nocosh}) and (\ref{eq:wcosh}) to get
 \begin{align*}
 \int d\Delta y&\langle \delta E_T(\Delta y/2)\delta E_T(-\Delta y/2)\rangle\cosh^2(\Delta y/2)\\
-&=\int d\Delta\eta\large\{   \langle \delta\epsilon(\Delta\eta/2)\delta\epsilon(\Delta\eta/2)\rangle\cosh^2(\Delta\eta/2)\\
+&=\int d\Delta\eta\mathlarger{\{}   \langle \delta\epsilon(\Delta\eta/2)\delta\epsilon(\Delta\eta/2)\rangle\cosh^2(\Delta\eta/2)\\
 &~~~~~~~~~~~~~~~~-\langle\delta\tilde{P}_z(\Delta\eta/2)\delta\tilde{P}_z(-\Delta\eta/2)\rangle\sinh^2(\Delta\eta/2)\\
 &~~~~~~~~~~~~~~~~+\langle \delta\tilde{P}_z(\Delta\eta/2)\delta\epsilon(-\Delta\eta/2)-\delta\epsilon(\Delta\eta/2)\delta\tilde{P}_z(-\Delta\eta/2)\rangle\\
-&\hspace*{80pt}\sinh(\Delta \eta/2)\cosh(\Delta \eta/2)\large\}\\
+&\hspace*{80pt}\sinh(\Delta \eta/2)\cosh(\Delta \eta/2)\mathlarger{\}}\\
 \eqnumber\label{eq:alt1}
 &=-\chi_{EE}.
 \end{align*}
 or subtract them to get
 \begin{align*}
 \int d\Delta y&\langle \delta E_T(\Delta y/2)\delta E_T(-\Delta y/2)\rangle\sinh^2(\Delta y/2)\\
-&=\int d\Delta\eta\large\{\langle\delta\tilde{P}_z(\Delta\eta/2)\delta\tilde{P}_z(-\Delta\eta/2)\rangle\cosh^2(\Delta\eta/2)\\
+&=\int d\Delta\eta\mathlarger{\{}\langle\delta\tilde{P}_z(\Delta\eta/2)\delta\tilde{P}_z(-\Delta\eta/2)\rangle\cosh^2(\Delta\eta/2)\\
 &~~~~~~~~~~~~~~~~-\langle \delta\epsilon(\Delta\eta/2)\delta\epsilon(-\Delta\eta/2)\rangle\sinh^2(\Delta\eta/2)\\
 &~~~~~~~~~~~~~~~~-\langle \delta\tilde{P}_z(\Delta\eta/2)\delta\epsilon(-\Delta\eta/2)-\delta\epsilon(\Delta\eta/2)\delta\tilde{P}_z(-\Delta\eta/2)\rangle\\
-&\hspace*{80pt}\sinh(\Delta \eta/2)\cosh(\Delta \eta/2)\large\}\\
+&\hspace*{80pt}\sinh(\Delta \eta/2)\cosh(\Delta \eta/2)\mathlarger{\}}\\
 \eqnumber\label{eq:alt2}
 &=-\chi_{pp}.
 \end{align*}
