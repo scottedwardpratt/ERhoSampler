@@ -27,6 +27,7 @@ namespace NMSU_ERrhoSampler{
 class CcorrVsEta{
 public:
 	double DETA;
+	void TestSumRules(Chyper *hyper);
 	virtual void GetCorrVsEta(double eta,Eigen::MatrixXd &corr){
 		//This is a dummy
 	}
@@ -49,6 +50,27 @@ private:
     void init1(std::string);
     static const int Ncharges=7;
     static const int Netas=1002;
+    std::string charg_names[Ncharges]={"E","Ux","Uy","Uz","B","Q","S"};
+    std::vector<std::vector<double>> corr_input=std::vector<std::vector<double>>(Ncharges*Ncharges,std::vector<double>(Netas,0  ));
+    int index_eta(double);
+    int index_charge(int,int);
+};
+
+class CcorrVsEtaOlehAlt : public CcorrVsEta{
+public:
+	void GetCorrVsEta(double eta,Eigen::MatrixXd &corr);
+    CcorrVsEtaOlehAlt()
+    {
+        std::string fol_name= "./ScottCFs/";
+        this->init1(fol_name);
+    }
+private:
+    ifstream t_file;
+    void init1(std::string);
+    static const int Ncharges=7;
+    static const int Netas=501;
+		static constexpr double eta_max=5.0,tau=11.0;
+		double d_eta;
     std::string charg_names[Ncharges]={"E","Ux","Uy","Uz","B","Q","S"};
     std::vector<std::vector<double>> corr_input=std::vector<std::vector<double>>(Ncharges*Ncharges,std::vector<double>(Netas,0  ));
     int index_eta(double);

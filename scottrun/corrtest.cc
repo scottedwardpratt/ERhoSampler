@@ -10,6 +10,11 @@ using namespace std;
 // This makes a dummy hyper-element then creates particles and tests yield and energy of created partilces of specific pid
 
 int main(){
+	int ievent;
+	double T=0.150,tau=11.0,A=100.0,deleta=0.01;
+	double rhoB=(8.0/11.0)*0.16,rhoQ;
+	rhoQ=0.4*rhoB;
+	
 	Crandy *randy=new Crandy(time(NULL));
 	CparameterMap parmap;
 	parmap.ReadParsFromFile("parameters/parameters.txt");
@@ -20,22 +25,20 @@ int main(){
 	
 	Chyper *hyper=new Chyper();
 	//CcorrVsEtaScott corrvseta;
-	CcorrVsEtaOleh corrvseta;
+	//CcorrVsEtaOleh corrvseta;
+	CcorrVsEtaOlehAlt corrvseta;
 	CcorrVsY corrvsy(&parmap);
 	
-	int a=1,b=1;
-	Eigen::MatrixXd corrmatrix(7,7);
-	for(double deleta=-0.5;deleta<0.5;deleta+=0.01){
-		corrvseta.GetCorrVsEta(deleta,corrmatrix);
-		printf("%6.3f %8.5f\n",deleta,corrmatrix(a,b));
-	}
+	//Eigen::MatrixXd corrmatrix(7,7);
+	//int a=4,b=4;
+	// double eta;
+	//for(eta=-1+0.5*0.1;eta<1.0;eta+=0.1){
+		//corrvseta.GetCorrVsEta(eta,corrmatrix);
+		//printf("%6.3f %8.5f\n",eta,corrmatrix(a,b));
+	//}
 	
-	int ievent;
-	double T=0.150,tau=10.0,A=100.0,deleta=0.02;
-	double rhoB=(8.0/11.0)*0.16,rhoQ;
-	rhoQ=0.4*rhoB;
 	Csampler *sampler=new Csampler(T,0.093,&parmap,reslist,randy);
-	
+
 	CpartList *partlista=new CpartList(&parmap,reslist);
 	CpartList *partlistb=new CpartList(&parmap,reslist);
 	
@@ -49,8 +52,7 @@ int main(){
 	cout << "chi4BQS\n";
 	cout << hyper->chi4BQS << endl;
 	
-	
-	exit(1);
+	//corrvseta.TestSumRules(hyper);
 	
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
 		sampler->partlist=partlista;
