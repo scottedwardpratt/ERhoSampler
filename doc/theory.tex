@@ -52,6 +52,8 @@ arc=0pt,outer arc=0pt,
 {#2}
 \end{tcolorbox}
 }
+\textwidth 7.0 in
+\hoffset -0.8 in
 %\newcommand{\exampleend}{
 %\begin{samepage}
 %\nopagebreak\noindent\rule{\textwidth}{1pt}
@@ -164,4 +166,56 @@ or subtract them to get
 \eqnumber\label{eq:alt2}
 &=-\chi_{pp}.
 \end{align*}
+
+\section{Constraints for Green's Functions due to Conservation Laws}
+If one has energy density (energy per spatial rapidity), $\delta\epsilon$, at time $\tau_0$, the resulting energy, momentum and charge conservation can be expressed in terms of Green's functions,
+\begin{eqnarray}
+\delta\epsilon(\tau,\eta)&=&\int d\eta_0 G_{EE}(\tau,\tau_0,\Delta\eta=\eta-\eta_0)\delta\epsilon(\tau_0,\eta_0),\\
+\nonumber
+\delta \tilde{P}_z(\tau,\eta)&=&\int d\eta_0 G_{PE}(\tau,\tau_0,\Delta\eta=\eta-\eta_0)\delta\epsilon(\tau_0,\eta_0),\\
+\nonumber
+\delta \tilde{\rho}(\tau,\eta)&=&\int d\eta_0 G_{QE}(\tau,\tau_0,\Delta\eta=\eta-\eta_0)\delta\epsilon(\tau_0,\eta_0),\\
+\end{eqnarray}
+Considering the case where $\delta\epsilon(\tau_0,\eta_0)$ is a delta function at $\eta_0=0$,
+\begin{eqnarray}
+\delta\epsilon(\tau_0,\epsilon)=\delta E_{\rm tot}\delta(\eta_0),
+\end{eqnarray}
+the total energy is $E_{\rm tot}$, which along with momentum and charge must then be conserved. The energy, momentum and charge in the lab frame are defined as
+\begin{eqnarray}
+E_{\rm tot}&=&\int d\eta\left(\delta\epsilon(\eta,\tau)\cosh\eta+\delta\tilde{P}_z(\eta,\tau)\sinh\eta\right),\\
+P_{z{\rm tot}}&=&0=\int d\eta\left(\delta\tilde{P}_z(\eta,\tau)\cosh\eta+\delta\epsilon(\eta,\tau)\sinh\eta\right),\\
+Q_{\rm tot}&=&0=\int d\eta\delta\rho(\eta,\tau).
+\end{eqnarray}
+The momentum and energy expressions above can be derived by starting with writing the energy and momentum in terms of the stress-energy tensor,
+\begin{eqnarray}
+\delta P^\mu=\int ~\delta T_{\mu\nu}d\Sigma_\nu,
+\end{eqnarray}
+where $d\Sigma_\nu$ is the differential hyper volume, $\sim \tau d\eta$ in the local Bjorken frame. In that frame $\delta T_{00}=\delta\epsilon/\tau$ and $T_{0z}=\delta \tilde{P}_z/\tau$. Boosting the resulting energy-momentum four vector to the lab frame adds the factors, $\cosh\eta$ and $\sinh\eta$. 
+
+Energy, momentum and charge conservation the reguire the following constraints on the Green's functions,
+\begin{eqnarray}\label{eq:sumruleGE}
+\int d\Delta\eta\left[G_{EE}(\tau,\tau_0,\Delta\eta)\cosh\eta+G_{PE}(\tau,\tau_0,\Delta\eta)\sinh\eta\right]&=&1,\\
+\nonumber
+\int d\Delta\eta\left[G_{PE}(\tau,\tau_0,\Delta\eta)\cosh\eta+G_{EE}(\tau,\tau_0,\Delta\eta)\sinh\eta\right]&=&0,\\
+\nonumber
+\int d\Delta\eta~G_{QE}(\tau,\tau_0,\Delta\eta)&=&0.
+\end{eqnarray}
+
+Similarly, one can consider initial fluctuations in the momentum density. The resulting constraints are:
+\begin{eqnarray}\label{eq:sumruleGP}
+\int d\Delta\eta\left[G_{PP}(\tau,\tau_0,\Delta\eta)\cosh\eta+G_{EP}(\tau,\tau_0,\Delta\eta)\sinh\eta\right]&=&1,\\
+\nonumber
+\int d\Delta\eta\left[G_{EP}(\tau,\tau_0,\Delta\eta)\cosh\eta+G_{PP}(\tau,\tau_0,\Delta\eta)\sinh\eta\right]&=&0,\\
+\nonumber
+\int d\Delta\eta~G_{QP}(\tau,\tau_0,\Delta\eta)&=0.
+\end{eqnarray}
+Finally, for the charge,
+\begin{eqnarray}\label{eq:sumruleGQ}
+\int d\Delta\eta~G_{QQ}(\tau,\tau_0,\Delta\eta)&=&1,\\
+\nonumber
+\int d\Delta\eta\left[G_{EQ}(\tau,\tau_0,\Delta\eta)\cosh\eta+G_{PQ}(\tau,\tau_0,\Delta\eta)\sinh\eta\right]&=&0,\\
+\nonumber
+\int d\Delta\eta\left[G_{PQ}(\tau,\tau_0,\Delta\eta)\cosh\eta+G_{EQ}(\tau,\tau_0,\Delta\eta)\sinh\eta\right]&=&0.
+\end{eqnarray}
+Eq.s (\ref{eq:sumruleGE}), (\ref{eq:sumruleGP}) and (\ref{eq:sumruleGQ}) represent the constraints on Green's functions due to conservation laws.
 \end{document}
