@@ -52,7 +52,8 @@ int main(){
 	cout << "chi4BQS\n";
 	cout << hyper->chi4BQS << endl;
 	
-	//corrvseta.TestSumRules(hyper);
+	corrvseta.TestSumRules(hyper);
+	exit(1);
 	
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
 		sampler->partlist=partlista;
