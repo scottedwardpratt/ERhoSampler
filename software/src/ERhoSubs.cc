@@ -1,6 +1,6 @@
 #include "msu_erhosampler/erhosampler.h"
 
-void NMSU_ERrhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,double A,double deleta,double rhoB,double rhoQ){
+void NMSU_ERhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,double A,double deleta,double rhoB,double rhoQ){
 	double V0=A*tau*deleta;
 	hyper->T0=T;
 	hyper->sigma=0.093;
@@ -25,7 +25,7 @@ void NMSU_ERrhoSampler::FillOutHyperBjorken(Chyper *hyper,double T,double tau,do
 			hyper->pitilde[alpha][beta]=0.0;
 }
 
-void NMSU_ERrhoSampler::DecayParts(Crandy *randyset,CpartList *partlist){
+void NMSU_ERhoSampler::DecayParts(Crandy *randyset,CpartList *partlist){
 	CDecay_NBody Decay(randyset);
 	int imother,idaughter,alpha,a;
 	int nbodies,ibody,ntry;
@@ -116,7 +116,7 @@ void NMSU_ERrhoSampler::DecayParts(Crandy *randyset,CpartList *partlist){
 	}
 }
 
-void NMSU_ERrhoSampler::IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
+void NMSU_ERhoSampler::IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget){
 	int a,ia,nparts=partlist->nparts;
 	Eigen::VectorXd Q(7);
 	Cpart *part;
@@ -141,7 +141,7 @@ void NMSU_ERrhoSampler::IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQt
 	}
 }
 
-void NMSU_ERrhoSampler::Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest){
+void NMSU_ERhoSampler::Chi4Test(CpartList *partlist,Eigen::MatrixXd &chitest){
 	int a,b,ia,nparts=partlist->nparts;
 	Eigen::VectorXd Q(4);
 	Cpart *part;

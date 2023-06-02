@@ -16,7 +16,7 @@ using namespace std;
 
 class CdecayCorrVsY;
 
-namespace NMSU_ERrhoSampler{
+namespace NMSU_ERhoSampler{
 	void FillOutHyperBjorken(Chyper *hyper,double T,double tau,double A,double deleta,double rhoB,double rhoII);
 	void DecayParts(Crandy *randyset,CpartList *partlist);
 	void IncrementEQtest(CpartList *partlist,Eigen::VectorXd &EQtot,Eigen::VectorXd &EQTarget);

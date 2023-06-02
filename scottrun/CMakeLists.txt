@@ -77,3 +77,21 @@ add_dependencies(decaycorr extern_msu_eos)
 add_dependencies(decaycorr extern_msu_commonutils)
 add_dependencies(decaycorr extern_msu_erhosampler)
 target_link_libraries(decaycorr msu_sampler msu_commonutils msu_eos msu_erhosampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY} ${GITHOME_MSU}/commonutils/software/lib/libmsu_commonutils.a ${GITHOME_MSU}/msu_eos/software/lib/libmsu_eos.a ${GITHOME_MSU}/msu_sampler/software/lib/libmsu_sampler.a ${GITHOME_MSU}/ERhoSampler/software/lib/libmsu_erhosampler.a)
+
+########
+set(SOURCE_FILES ./eostest.cc)
+SET_SOURCE_FILES_PROPERTIES(eostest.cc
+	PROPERTIES OBJECT_DEPENDS ${GITHOME_MSU}/msu_sampler/software/lib/libmsu_sampler.a)
+SET_SOURCE_FILES_PROPERTIES(eostest.cc
+	PROPERTIES OBJECT_DEPENDS ${GITHOME_MSU}/msu_eos/software/lib/libmsu_eos.a)
+SET_SOURCE_FILES_PROPERTIES(eostest.cc
+	PROPERTIES OBJECT_DEPENDS ${GITHOME_MSU}/commonutils/software/lib/libmsu_commonutils.a)
+SET_SOURCE_FILES_PROPERTIES(eostest.cc
+	PROPERTIES OBJECT_DEPENDS ${GITHOME_MSU}/ERhoSampler/software/lib/libmsu_erhosampler.a)
+
+add_executable(eostest ${SOURCE_FILES})
+add_dependencies(eostest extern_msu_sampler)
+add_dependencies(eostest extern_msu_eos)
+add_dependencies(eostest extern_msu_commonutils)
+add_dependencies(eostest extern_msu_erhosampler)
+target_link_libraries(eostest msu_sampler msu_commonutils msu_eos msu_erhosampler ${GSL_LIBRARY} ${GSL_CBLAS_LIBRARY} ${EIGEN3_LIBRARY} ${GITHOME_MSU}/commonutils/software/lib/libmsu_commonutils.a ${GITHOME_MSU}/msu_eos/software/lib/libmsu_eos.a ${GITHOME_MSU}/msu_sampler/software/lib/libmsu_sampler.a ${GITHOME_MSU}/ERhoSampler/software/lib/libmsu_erhosampler.a)

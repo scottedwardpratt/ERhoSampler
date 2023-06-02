@@ -1,6 +1,6 @@
 #include "msu_erhosampler/erhosampler.h"
 
-using namespace NMSU_ERrhoSampler;
+using namespace NMSU_ERhoSampler;
 
 CcorrVsY::CcorrVsY(CparameterMap *parmap_set){
 	parmap=parmap_set;

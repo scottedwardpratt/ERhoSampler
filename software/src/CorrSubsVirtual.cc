@@ -1,6 +1,6 @@
 #include "msu_erhosampler/erhosampler.h"
 
-using namespace NMSU_ERrhoSampler;
+using namespace NMSU_ERhoSampler;
 
 void CcorrVsEtaOleh::init1(std::string path)
 {
