@@ -24,17 +24,18 @@ int main(){
 	CresInfo::randy=randy;
 	
 	Chyper *hyper=new Chyper();
-	//CcorrVsEtaScott coRvseta;
-	//CcorrVsEtaOleh coRvseta;
-	CcorrVsEtaOlehAlt coRvseta;
-	CcorrVsY coRvsy(&parmap);
+	//CcorrVsEtaScott corrvseta;
+	//CcorrVsEtaOleh corrvseta;
+	//CcorrVsEtaOlehAlt corrvseta;
 	
-	//Eigen::MatrixXd coRmatrix(7,7);
+	CcorrVsY corrvsy(&parmap);
+	
+	//Eigen::MatrixXd corrmatrix(7,7);
 	//int a=4,b=4;
 	// double eta;
 	//for(eta=-1+0.5*0.1;eta<1.0;eta+=0.1){
-		//coRvseta.GetCoRVsEta(eta,coRmatrix);
-		//printf("%6.3f %8.5f\n",eta,coRmatrix(a,b));
+		//corrvseta.Getcorrvseta(eta,corrmatrix);
+		//printf("%6.3f %8.5f\n",eta,corrmatrix(a,b));
 	//}
 	
 	Csampler *sampler=new Csampler(T,0.093,&parmap,reslist,randy);
@@ -52,7 +53,7 @@ int main(){
 	cout << "chi4BQS\n";
 	cout << hyper->chi4BQS << endl;
 	
-	coRvseta.TestSumRules(hyper);
+	corrvseta.TestSumRules(hyper);
 	exit(1);
 	
 	for(ievent=0;ievent<NEVENTS_TOT;ievent++){
@@ -70,7 +71,7 @@ int main(){
 		partlistb->SetEQWeightVec(hyper);
 		NMSU_ERhoSampler::DecayParts(randy,partlistb);
 		
-		coRvsy.Increment(partlista,partlistb,&coRvseta);
+		corrvsy.Increment(partlista,partlistb,&corrvseta);
 		partlista->Clear();
 		partlistb->Clear();
 		
@@ -79,7 +80,7 @@ int main(){
 		}
 	}
 	
-	coRvsy.WriteResults();
+	corrvsy.WriteResults();
 	
 	delete partlista;
 	delete partlistb;
